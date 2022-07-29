@@ -1,12 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"/>
     <title>Выберите школу</title>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
 </head>
 <body>
-<h1>
-    Выберите школу!!!
-</h1>
+<div>
+    <div th:insert="fragments/nav :: nav"></div>
+    <div class="container" style="padding-top: 5vh; display: flex; flex-direction: column; align-items: center;">
+        <h3><span th:text=" ${user.fullName}"></span>, добро пожаловать в электронную библиотеку</h3>
+        <br>
+        <div class="card-deck">
+            <div class="card" style="width: 20rem;" th:each="school : ${schools}">
+                <!--/*@thymesVar id="school" type="com.maksatkyrgyzbaev.ikitep.dto.SchoolDTO"*/-->
+                <img class="card-img-top" th:src="@{/images/{img} (img=${school.schoolImg})}"
+                     th:alt="${school.schoolName}">
+                <div class="card-body text-center">
+                    <h5 class="card-title" th:text="${school.schoolName}"></h5>
+                    <p class="card-text" th:text="${'Всего учеников: ' + school.countUsers}"></p>
+                    <p class="card-text" th:text="${'Всего книг: ' + school.countBooks}"></p>
+                    <p class="card-text" th:text="${'Книг на выдаче: ' + school.countBookedBooks}"></p>
+                    <a th:href="@{/school-{schoolId} (schoolId=${school.id})}" class="btn btn-primary">Перейти</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/webjars/jquery/3.0.0/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/1.12.9-1/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.0.0-2/js/bootstrap.min.js}"></script>
+
 </body>
 </html>

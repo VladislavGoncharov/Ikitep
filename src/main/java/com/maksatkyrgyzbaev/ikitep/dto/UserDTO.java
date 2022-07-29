@@ -3,7 +3,6 @@ package com.maksatkyrgyzbaev.ikitep.dto;
 import com.maksatkyrgyzbaev.ikitep.entity.Role;
 import lombok.*;
 
-import javax.persistence.*;
 import java.util.List;
 
 @Getter
@@ -18,6 +17,6 @@ public class UserDTO {
     private String password;
     private Role role;
     private String fullName;
-    private SchoolDTO school;
-    private List<BookedBookDTO> bookedBooks;
+    private String schoolName;
+    private List<Long> bookedBooksId;
 }

@@ -1,6 +1,8 @@
 package com.maksatkyrgyzbaev.ikitep.service;
 
+import com.maksatkyrgyzbaev.ikitep.dto.UserDTO;
 import com.maksatkyrgyzbaev.ikitep.entity.User;
+import com.maksatkyrgyzbaev.ikitep.mapper.UserMapper;
 import com.maksatkyrgyzbaev.ikitep.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,6 +18,8 @@ import java.util.List;
 @Transactional
 public class UserServiceImpl implements UserService {
 
+    private final UserMapper MAPPER = UserMapper.MAPPER;
+
     private final UserRepository userRepository;
 
     public UserServiceImpl(UserRepository userRepository) {
@@ -24,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findFirstByUsername(username);
+        User user = userRepository.findUserByUsername(username);
         if (user == null)
             throw new UsernameNotFoundException("Такой пользователь не найден: " + username);
 
@@ -36,5 +40,15 @@ public class UserServiceImpl implements UserService {
                 user.getPassword(),
                 roles
         );
+    }
+
+    @Override
+    public UserDTO findUserByUsername(String username) {
+        return MAPPER.fromUser(userRepository.findUserByUsername(username));
+    }
+
+    @Override
+    public Long getCountUsers() {
+        return userRepository.count();
     }
 }

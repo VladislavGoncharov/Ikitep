@@ -2,7 +2,6 @@ package com.maksatkyrgyzbaev.ikitep.dto;
 
 import lombok.*;
 
-import javax.persistence.*;
 import java.util.List;
 
 @Getter

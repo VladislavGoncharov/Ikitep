@@ -14,4 +14,9 @@ public class BookServiceImpl implements BookService {
     public BookServiceImpl(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }
+
+    @Override
+    public Long getCountBooks() {
+        return bookRepository.count();
+    }
 }

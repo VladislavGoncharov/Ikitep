@@ -28,4 +28,5 @@ public class School {
     private List<Book> books;
     @OneToMany
     private List<BookedBook> bookedBooks;
+    private String schoolImg;
 }
