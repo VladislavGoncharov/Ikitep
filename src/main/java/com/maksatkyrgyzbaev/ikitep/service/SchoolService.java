@@ -19,4 +19,8 @@ public interface SchoolService {
     SchoolDTO getSchoolWithNameAndImgById(Long id);
 
     List<SchoolDTO> findAllIdAndSchoolName();
+
+    SchoolDTO getById(Long id);
+
+    SchoolDTO getBySchoolName(String schoolName);
 }

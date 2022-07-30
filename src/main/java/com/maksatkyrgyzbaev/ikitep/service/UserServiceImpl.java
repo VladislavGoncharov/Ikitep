@@ -2,14 +2,18 @@ package com.maksatkyrgyzbaev.ikitep.service;
 
 import com.maksatkyrgyzbaev.ikitep.dto.SchoolDTO;
 import com.maksatkyrgyzbaev.ikitep.dto.UserDTO;
+import com.maksatkyrgyzbaev.ikitep.entity.Role;
 import com.maksatkyrgyzbaev.ikitep.entity.School;
 import com.maksatkyrgyzbaev.ikitep.entity.User;
 import com.maksatkyrgyzbaev.ikitep.mapper.UserMapper;
+import com.maksatkyrgyzbaev.ikitep.repository.SchoolRepository;
 import com.maksatkyrgyzbaev.ikitep.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,9 +30,11 @@ public class UserServiceImpl implements UserService {
     private final UserMapper MAPPER = UserMapper.MAPPER;
 
     private final UserRepository userRepository;
+    private final SchoolRepository schoolRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, SchoolRepository schoolRepository) {
         this.userRepository = userRepository;
+        this.schoolRepository = schoolRepository;
     }
 
     @Override
@@ -82,49 +88,82 @@ public class UserServiceImpl implements UserService {
         return UserDTO.builder()
                 .id(user.getId())
                 .username(user.getUsername())
+                .password(user.getPassword())
+                .matchingPassword(user.getPassword())
                 .fullName(user.getFullName())
                 .role(user.getRole())
                 .schoolName(user.getSchool().getSchoolName())
                 .build();
     }
 
-    @Override
-    public void update(UserDTO userDTO) throws ValidationException {
-
-    }
 
     @Override
     public void save(UserDTO userDTO) throws ValidationException {
         if (userRepository.existsByUsername(userDTO.getUsername()))
             throw new ValidationException("Пользователь с таким именем уже существует");
-        if (!Objects.equals(userDTO.getPassword(),userDTO.getMatchingPassword()))
+
+        if (!Objects.equals(userDTO.getPassword(), userDTO.getMatchingPassword())
+                || userDTO.getPassword().isEmpty() || userDTO.getPassword() == null)
             throw new ValidationException("Пароли не совпадают");
 
 
+        if (!Role.isRole(userDTO.getRole()))
+            throw new ValidationException("Роль не выбрана");
 
+        if (!schoolRepository.existsBySchoolName(userDTO.getSchoolName()))
+            throw new ValidationException("Школа не выбрана");
+
+        User user = User.builder()
+                .username(userDTO.getUsername())
+                .password(new BCryptPasswordEncoder().encode(userDTO.getPassword()))
+                .fullName(userDTO.getFullName())
+                .role(userDTO.getRole())
+                .school(schoolRepository.getBySchoolName(userDTO.getSchoolName()))
+                .build();
+        School school = schoolRepository.getBySchoolName(userDTO.getSchoolName());
+        school.getUsers().add(user);
+        schoolRepository.save(school);
     }
 
     @Override
-    public void save(SchoolDTO schoolDTO) throws ValidationException {
-        if (schoolRepository.existsBySchoolName(schoolDTO.getSchoolName()))
-            throw new ValidationException("Такая школа уже существует");
-        if (schoolDTO.getSchoolImg() == null || schoolDTO.getSchoolImg().isEmpty())
-            schoolDTO.setSchoolImg("school_1.png");
+    public void update(UserDTO userDTO) throws ValidationException {
+        User oldUser = userRepository.getById(userDTO.getId());
 
-        schoolRepository.save(School.builder()
-                .schoolName(schoolDTO.getSchoolName())
-                .schoolImg(schoolDTO.getSchoolImg())
-                .build());
-    }
+        if (userRepository.existsByUsernameAndIdNot(userDTO.getUsername(), userDTO.getId()))
+            throw new ValidationException("Пользователь с таким именем уже существует");
 
-    @Override
-    public void update(SchoolDTO schoolDTO) throws ValidationException {
-        if (schoolRepository.existsBySchoolNameAndIdNot(schoolDTO.getSchoolName(), schoolDTO.getId()))
-            throw new ValidationException("Такая школа уже существует");
+        if (!Objects.equals(userDTO.getPassword(), userDTO.getMatchingPassword())
+                || userDTO.getPassword().isEmpty() || userDTO.getPassword() == null)
+            throw new ValidationException("Пароли не совпадают");
 
-        if (schoolDTO.getSchoolImg() == null || schoolDTO.getSchoolImg().isEmpty())
-            schoolDTO.setSchoolImg("school_1.png");
+        // Если пароль сменили, его нужно вновь закодировать
+        if (!Objects.equals(userDTO.getPassword(), oldUser.getPassword()))
+            userDTO.setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
 
-        schoolRepository.save(MAPPER.toSchool(schoolDTO, schoolRepository.getById(schoolDTO.getId())));
+        if (!Role.isRole(userDTO.getRole()))
+            throw new ValidationException("Роль не выбрана");
+        if (!schoolRepository.existsBySchoolName(userDTO.getSchoolName()))
+            throw new ValidationException("Школа не выбрана");
+
+        User updateUser = User.builder()
+                .id(userDTO.getId())
+                .username(userDTO.getUsername())
+                .password(userDTO.getPassword())
+                .fullName(userDTO.getFullName())
+                .role(userDTO.getRole())
+                .school(schoolRepository.getBySchoolName(userDTO.getSchoolName()))
+                .bookedBooks(userRepository.getById(userDTO.getId()).getBookedBooks())
+                .build();
+
+        // Если школа изменилась, из старой удаляем, в новую заносим
+        if (!oldUser.getSchool().getSchoolName().equals(userDTO.getSchoolName())){
+            School oldSchool = oldUser.getSchool();
+            School newSchool = schoolRepository.getBySchoolName(userDTO.getSchoolName());
+
+            newSchool.getUsers().add(updateUser);
+            oldSchool.getUsers().remove(oldUser);
+            schoolRepository.saveAll(List.of(oldSchool,newSchool));
+        }
+        else userRepository.save(updateUser);
     }
 }

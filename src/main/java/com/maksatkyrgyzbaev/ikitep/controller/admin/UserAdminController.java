@@ -26,7 +26,8 @@ public class UserAdminController {
 
     @GetMapping
     public String userMain(Model model) {
-        return addModel(model,new UserDTO(),null);
+        addModel(model,new UserDTO(),null);
+        return "adminUser";
     }
 
     @PostMapping("/save")
@@ -35,7 +36,8 @@ public class UserAdminController {
             if (userDTO.getId() != null) userService.update(userDTO);
             else userService.save(userDTO);
         } catch (ValidationException e) {
-            return addModel(model,userDTO,e.getMessage());
+            addModel(model,userDTO,e.getMessage());
+            return "adminUser";
         }
 
         return "redirect:/admin/user";
@@ -43,7 +45,9 @@ public class UserAdminController {
 
     @RequestMapping("/update-{id}")
     public String updateUser(@PathVariable("id") Long id, Model model) {
-        return addModel(model,userService.getById(id),null);
+        addModel(model,userService.getById(id),null);
+        return "adminUser";
+
     }
 
     @RequestMapping("/delete-{id}")
@@ -52,12 +56,11 @@ public class UserAdminController {
         return "redirect:/admin/user";
     }
 
-    private String addModel(Model model,UserDTO userDTO,String error){
+    private void addModel(Model model,UserDTO userDTO,String error){
         model.addAttribute("allUsers", userService.findAll());
         model.addAttribute("allSchoolName", schoolService.findAllIdAndSchoolName());
         model.addAttribute("allRole", Role.getAllRole());
         model.addAttribute("newUser", userDTO);
         model.addAttribute("error", error);
-        return "adminUser";
     }
 }
