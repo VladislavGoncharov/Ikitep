@@ -23,8 +23,10 @@ public class Book {
 
     private String author;
     private String bookName;
+
     private String serialNumber; //для сканера штрих кода!!!!
     private int likes; // смотреть как часто его беруть то и есть можем ввыводить топ книг!!!!
+
     @ManyToOne
     @JoinColumn(name = "school_id")
     private School school;
