@@ -15,8 +15,10 @@ public class UserDTO {
     private Long id;
     private String username;
     private String password;
+    private String matchingPassword;
     private Role role;
     private String fullName;
     private String schoolName;
     private List<Long> bookedBooksId;
+    private int countBookedBooksId;
 }

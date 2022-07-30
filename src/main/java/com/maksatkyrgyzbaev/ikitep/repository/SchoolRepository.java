@@ -3,6 +3,7 @@ package com.maksatkyrgyzbaev.ikitep.repository;
 import com.maksatkyrgyzbaev.ikitep.entity.School;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,4 +21,13 @@ public interface SchoolRepository extends JpaRepository<School, Long> {
     List<Object[]> findAllIdSchoolNameImgAndAllCount();
 
     Boolean existsBySchoolName(String schoolName);
+    Boolean existsBySchoolNameAndId(String schoolName,Long id);
+    Boolean existsBySchoolNameAndIdNot(String schoolName,Long id);
+
+    @Query(value =
+            "select s.school_name,s.school_img from schools s where s.id = :id" , nativeQuery = true)
+    String getSchoolWithNameAndImgById(@Param("id") Long id);
+
+    @Query(value = "select id, school_name from schools" , nativeQuery = true)
+    List<Object[]> findAllIdAndSchoolName();
 }

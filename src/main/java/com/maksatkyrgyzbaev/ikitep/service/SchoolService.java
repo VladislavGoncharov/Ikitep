@@ -13,4 +13,10 @@ public interface SchoolService {
 
     void save(SchoolDTO schoolDTO) throws ValidationException;
     void update(SchoolDTO schoolDTO) throws ValidationException;
+
+    void deleteById(Long id);
+
+    SchoolDTO getSchoolWithNameAndImgById(Long id);
+
+    List<SchoolDTO> findAllIdAndSchoolName();
 }

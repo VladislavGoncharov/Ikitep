@@ -26,7 +26,7 @@ public class AdminController {
     }
 
     @RequestMapping
-    private String adminPage(Model model){
+    public String adminPage(Model model){
         model.addAttribute("school",schoolService.getCountSchools());
         model.addAttribute("user",userService.getCountUsers());
         model.addAttribute("book",bookService.getCountBooks());

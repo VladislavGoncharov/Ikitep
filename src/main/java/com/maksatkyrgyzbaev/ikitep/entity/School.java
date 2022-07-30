@@ -10,6 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 
 @Entity
 @Table(name = "schools")
@@ -22,11 +23,11 @@ public class School {
     private Long id;
 
     private String schoolName;
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY)
     private List<User> users;
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY)
     private List<Book> books;
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY)
     private List<BookedBook> bookedBooks;
     private String schoolImg;
 }

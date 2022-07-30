@@ -12,8 +12,12 @@
         <h3>Школы</span></h3>
         <br>
         <form action="#" th:action="@{/admin/school/save}" th:object="${newSchool}" method="post">
+            <input type="hidden" th:field="*{id}">
         <table class="table text-center">
             <thead>
+            <tr th:if="${error!=null}">
+                <th class="alert alert-danger" role="alert" th:text="${error}" colspan="3"></th>
+            </tr>
             <tr>
                 <th scope="col">Название</th>
                 <th scope="col">Загрузить фото (на перспективу)</th>
@@ -43,13 +47,14 @@
             <tr>
                 <th scope="col">№</th>
                 <th scope="col">Название</th>
+                <th scope="col">Фото школы</th>
                 <th scope="col">Количество учеников</th>
                 <th scope="col">Количество книг</th>
                 <th scope="col">Книги на выдаче</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="school,stat : ${allSchool}">
+            <tr th:each="school,stat : ${allSchools}">
                 <td th:text="${stat.count}"></td>
                 <td th:text="${school.schoolName}"></td>
                 <td><img style="width: 4rem" th:src="@{/images/{img} (img=${school.schoolImg})}"

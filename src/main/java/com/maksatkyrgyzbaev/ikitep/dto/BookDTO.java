@@ -11,6 +11,7 @@ import java.util.List;
 @Builder
 public class BookDTO {
     private Long id;
+    private Long serialNumber;
     private String author;
     private String bookName;
     private SchoolDTO school;
