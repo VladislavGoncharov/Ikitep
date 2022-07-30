@@ -11,6 +11,8 @@ import java.util.List;
 @Repository
 public interface SchoolRepository extends JpaRepository<School, Long> {
 
+    School getBySchoolName(String schoolName);
+
     @Query(value =
             "select s.id,s.school_name,s.school_img,count(users_id),count(books_id),count(booked_books_id) " +
                     "            from schools s" +
@@ -20,9 +22,9 @@ public interface SchoolRepository extends JpaRepository<School, Long> {
                     "            group by s.school_name", nativeQuery = true)
     List<Object[]> findAllIdSchoolNameImgAndAllCount();
 
-    Boolean existsBySchoolName(String schoolName);
-    Boolean existsBySchoolNameAndId(String schoolName,Long id);
-    Boolean existsBySchoolNameAndIdNot(String schoolName,Long id);
+
+    boolean existsBySchoolName(String schoolName);
+    boolean existsBySchoolNameAndIdNot(String schoolName,Long id);
 
     @Query(value =
             "select s.school_name,s.school_img from schools s where s.id = :id" , nativeQuery = true)

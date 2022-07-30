@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 @Getter
 @Setter
@@ -29,11 +30,14 @@ public class BookedBook {
     @ManyToOne
     @JoinColumn(name = "student_id")
     private User user;
-    @ManyToOne
-    @JoinColumn(name = "bookedBook_id")
-    private BookedBook bookedBook;
     private LocalDate dateOfCreation;
     private LocalDate returnDate;
     private boolean bookingIsActive;
+
+    @PrePersist
+    public void prePersist() {
+        dateOfCreation = LocalDate.now();
+        bookingIsActive = true;
+    }
 
 }

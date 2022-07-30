@@ -1,5 +1,8 @@
 package com.maksatkyrgyzbaev.ikitep.dto;
 
+import com.maksatkyrgyzbaev.ikitep.entity.Book;
+import com.maksatkyrgyzbaev.ikitep.entity.BookedBook;
+import com.maksatkyrgyzbaev.ikitep.entity.User;
 import lombok.*;
 
 import java.util.List;
@@ -13,9 +16,9 @@ import java.util.List;
 public class SchoolDTO {
     private Long id;
     private String schoolName;
-    private List<UserDTO> users;
-    private List<BookDTO> books;
-    private List<BookedBookDTO> bookedBooks;
+    private List<User> users;
+    private List<Book> books;
+    private List<BookedBook> bookedBooks;
     private String schoolImg;
 
     private Long countUsers;

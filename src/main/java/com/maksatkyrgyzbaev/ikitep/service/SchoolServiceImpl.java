@@ -5,7 +5,6 @@ import com.maksatkyrgyzbaev.ikitep.dto.SchoolDTO;
 import com.maksatkyrgyzbaev.ikitep.entity.School;
 import com.maksatkyrgyzbaev.ikitep.mapper.SchoolMapper;
 import com.maksatkyrgyzbaev.ikitep.repository.SchoolRepository;
-import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,21 +26,17 @@ public class SchoolServiceImpl implements SchoolService {
 
     @Override
     public List<SchoolDTO> findAllIdSchoolNameImgAndAllCount() {
-        List<Object[]> list = schoolRepository.findAllIdSchoolNameImgAndAllCount();
+        List<School> list = schoolRepository.findAll();
 
-        return list.stream().map(objects -> SchoolDTO.builder()
-                        .id(returnLong(objects[0]))
-                        .schoolName(String.valueOf(objects[1]))
-                        .schoolImg(String.valueOf(objects[2]))
-                        .countUsers(returnLong(objects[3]))
-                        .countBooks(returnLong(objects[4]))
-                        .countBookedBooks(returnLong(objects[5]))
+        return list.stream().map(school -> SchoolDTO.builder()
+                        .id(school.getId())
+                        .schoolName(school.getSchoolName())
+                        .schoolImg(school.getSchoolImg())
+                        .countUsers((long) school.getUsers().size())
+                        .countBooks((long) school.getBooks().size())
+                        .countBookedBooks((long) school.getBookedBooks().size())
                         .build())
                 .collect(Collectors.toList());
-    }
-
-    private Long returnLong(Object o) {
-        return Long.parseLong(String.valueOf(o));
     }
 
     @Override
@@ -94,10 +89,20 @@ public class SchoolServiceImpl implements SchoolService {
     public List<SchoolDTO> findAllIdAndSchoolName() {
         List<Object[]> objects = schoolRepository.findAllIdAndSchoolName();
         return objects.stream().map(object -> SchoolDTO.builder()
-                .id(returnLong(object[0]))
+                .id(Long.parseLong(String.valueOf(object[0])))
                 .schoolName(String.valueOf(object[1]))
                 .build())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public SchoolDTO getById(Long id) {
+        return MAPPER.fromSchool(schoolRepository.getById(id));
+    }
+
+    @Override
+    public SchoolDTO getBySchoolName(String schoolName) {
+        return MAPPER.fromSchool(schoolRepository.getBySchoolName(schoolName));
     }
 
 

@@ -17,7 +17,7 @@ public interface UserService extends UserDetailsService {
 
     UserDTO getById(Long id);
 
-    void update(UserDTO userDTO) throws ValidationException;
-
     void save(UserDTO userDTO) throws ValidationException;
+
+    void update(UserDTO userDTO) throws ValidationException;
 }

@@ -23,18 +23,24 @@ public class Book {
 
     private String author;
     private String bookName;
-    private Long serialNumber; //для сканера штрих кода!!!!
-    private int like; // смотреть как часто его беруть то и есть можем ввыводить топ книг!!!!
-    //test branchTest new line code here
+
+    private String serialNumber; //для сканера штрих кода!!!!
+    private int likes; // смотреть как часто его беруть то и есть можем ввыводить топ книг!!!!
+
     @ManyToOne
     @JoinColumn(name = "school_id")
     private School school;
     @OneToMany
     private List<BookedBook> bookedBook;
-    private int totalNumber;
-    private int remains;
-    ////// тест ветка влад гончаров
 
-
-
+    @PrePersist
+    public void prePersist(){
+        if (serialNumber==null)
+            serialNumber = "";
+        likes = 0;
+    }
+    @PreUpdate
+    public void preUpdate(){
+        likes++;
+    }
 }

@@ -5,23 +5,32 @@ import com.maksatkyrgyzbaev.ikitep.entity.School;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Mapper
 public interface SchoolMapper {
 
     SchoolMapper MAPPER = Mappers.getMapper(SchoolMapper.class);
 
-//    default List<SchoolDTO> fromSchoolList(List<SchoolDTO> schoolDTOS) {
-//        return reservation.stream()
-//                .map(res -> ReservationDTO.builder()
-//                        .id(res.getId())
-//                        .reservationDate(res.getReservationDate())
-//                        .startTime(res.getStartTime())
-//                        .endTime(res.getEndTime())
-//                        .amenityType(res.getAmenityType())
-//                        .user(res.getUser())
-//                        .build())
-//                .collect(Collectors.toList());
-//    }
+    default List<SchoolDTO> fromSchoolList(List<School> school) {
+        return school.stream()
+                .map(this::fromSchool).collect(Collectors.toList());
+    }
+
+    default SchoolDTO fromSchool(School school) {
+        return SchoolDTO.builder()
+                .id(school.getId())
+                .schoolName(school.getSchoolName())
+                .schoolImg(school.getSchoolImg())
+                .books(school.getBooks())
+                .users(school.getUsers())
+                .bookedBooks(school.getBookedBooks())
+                .countUsers((long) school.getUsers().size())
+                .countBooks((long) school.getBooks().size())
+                .countBookedBooks((long) school.getBookedBooks().size())
+                .build();
+    }
 
     default School toSchool(SchoolDTO schoolDTO,School school) {
         return School.builder()

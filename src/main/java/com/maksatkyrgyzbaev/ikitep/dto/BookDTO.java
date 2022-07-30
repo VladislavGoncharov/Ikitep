@@ -1,5 +1,6 @@
 package com.maksatkyrgyzbaev.ikitep.dto;
 
+import com.maksatkyrgyzbaev.ikitep.entity.BookedBook;
 import lombok.*;
 
 import java.util.List;
@@ -9,13 +10,14 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class BookDTO {
     private Long id;
-    private Long serialNumber;
+    private String serialNumber;
     private String author;
     private String bookName;
-    private SchoolDTO school;
-    private List<BookedBookDTO> bookedBook;
-    private int totalNumber;
-    private int remains;
+    private String schoolName;
+    private List<BookedBook> bookedBook;
+    private int likes;
+
 }

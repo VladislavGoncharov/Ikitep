@@ -11,4 +11,9 @@ public enum Role {
     public static List<Role> getAllRole(){
         return List.of(ADMIN,LIBRARIAN,STUDENT);
     }
+
+    public static boolean isRole(Role role){
+        if (role == null) return false;
+        return Role.getAllRole().contains(role);
+    }
 }
