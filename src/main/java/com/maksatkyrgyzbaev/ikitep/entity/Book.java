@@ -22,8 +22,8 @@ public class Book {
     private Long id;
     private String author;
     private String bookName;
-    private Long serialNumber; //для сканера штрих кода
-    private int like; // смотреть как часто его беруть то и есть можем ввыводить топ книг
+    private Long serialNumber; //для сканера штрих кода!!
+    private int like; // смотреть как часто его беруть то и есть можем ввыводить топ книг!
     @ManyToOne
     @JoinColumn(name = "school_id")
     private School school;
