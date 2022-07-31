@@ -1,6 +1,5 @@
 package com.maksatkyrgyzbaev.ikitep.controller.admin;
 
-import com.maksatkyrgyzbaev.ikitep.dto.SchoolDTO;
 import com.maksatkyrgyzbaev.ikitep.dto.UserDTO;
 import com.maksatkyrgyzbaev.ikitep.entity.Role;
 import com.maksatkyrgyzbaev.ikitep.service.SchoolService;
@@ -27,7 +26,7 @@ public class UserAdminController {
     @GetMapping
     public String userMain(Model model) {
         addModel(model,new UserDTO(),null);
-        return "adminUser";
+        return "admin-user";
     }
 
     @PostMapping("/save")
@@ -37,7 +36,7 @@ public class UserAdminController {
             else userService.save(userDTO);
         } catch (ValidationException e) {
             addModel(model,userDTO,e.getMessage());
-            return "adminUser";
+            return "admin-user";
         }
 
         return "redirect:/admin/user";
@@ -46,7 +45,7 @@ public class UserAdminController {
     @RequestMapping("/update-{id}")
     public String updateUser(@PathVariable("id") Long id, Model model) {
         addModel(model,userService.getById(id),null);
-        return "adminUser";
+        return "admin-user";
 
     }
 
@@ -59,7 +58,7 @@ public class UserAdminController {
     private void addModel(Model model,UserDTO userDTO,String error){
         model.addAttribute("allUsers", userService.findAll());
         model.addAttribute("allSchoolName", schoolService.findAllIdAndSchoolName());
-        model.addAttribute("allRole", Role.getAllRole());
+        model.addAttribute("allRole", Role.getAllRoleWithoutAdmin());
         model.addAttribute("newUser", userDTO);
         model.addAttribute("error", error);
     }

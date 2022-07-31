@@ -22,7 +22,7 @@ public class SchoolAdminController {
     public String schoolMain(Model model) {
         model.addAttribute("allSchools", schoolService.findAllIdSchoolNameImgAndAllCount());
         model.addAttribute("newSchool", new SchoolDTO());
-        return "adminSchool";
+        return "admin-school";
     }
 
     @PostMapping("/save")
@@ -34,7 +34,7 @@ public class SchoolAdminController {
             model.addAttribute("allSchools", schoolService.findAllIdSchoolNameImgAndAllCount());
             model.addAttribute("newSchool", schoolDTO);
             model.addAttribute("error", e.getMessage());
-            return "adminSchool";
+            return "admin-school";
         }
 
         return "redirect:/admin/school";
@@ -44,7 +44,7 @@ public class SchoolAdminController {
     public String updateSchool(@PathVariable("id") Long id, Model model) {
         model.addAttribute("allSchools", schoolService.findAllIdSchoolNameImgAndAllCount());
         model.addAttribute("newSchool", schoolService.getSchoolWithNameAndImgById(id));
-        return "adminSchool";
+        return "admin-school";
     }
 
     @RequestMapping("/delete-{id}")

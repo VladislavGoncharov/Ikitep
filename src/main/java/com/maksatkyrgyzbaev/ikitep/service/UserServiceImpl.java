@@ -1,7 +1,7 @@
 package com.maksatkyrgyzbaev.ikitep.service;
 
-import com.maksatkyrgyzbaev.ikitep.dto.SchoolDTO;
 import com.maksatkyrgyzbaev.ikitep.dto.UserDTO;
+import com.maksatkyrgyzbaev.ikitep.entity.BookedBook;
 import com.maksatkyrgyzbaev.ikitep.entity.Role;
 import com.maksatkyrgyzbaev.ikitep.entity.School;
 import com.maksatkyrgyzbaev.ikitep.entity.User;
@@ -13,7 +13,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,10 +30,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final SchoolRepository schoolRepository;
+    private final BookedBookService bookedBookService;
 
-    public UserServiceImpl(UserRepository userRepository, SchoolRepository schoolRepository) {
+    public UserServiceImpl(UserRepository userRepository, SchoolRepository schoolRepository, BookedBookService bookedBookService) {
         this.userRepository = userRepository;
         this.schoolRepository = schoolRepository;
+        this.bookedBookService = bookedBookService;
     }
 
     @Override
@@ -79,6 +80,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteById(Long id) {
+        User user = userRepository.getById(id);
+
+        if (user.getBookedBooks().size() > 0) {
+            for (BookedBook bookedBook : user.getBookedBooks()) {
+                bookedBookService.deleteById(bookedBook.getId());
+            }
+        }
+        schoolRepository.deleteUserById(user.getSchool().getId(), id);
         userRepository.deleteById(id);
     }
 
@@ -151,19 +160,29 @@ public class UserServiceImpl implements UserService {
                 .password(userDTO.getPassword())
                 .fullName(userDTO.getFullName())
                 .role(userDTO.getRole())
-                .school(schoolRepository.getBySchoolName(userDTO.getSchoolName()))
-                .bookedBooks(userRepository.getById(userDTO.getId()).getBookedBooks())
+                .school(oldUser.getSchool())
+                .bookedBooks(oldUser.getBookedBooks())
                 .build();
 
         // Если школа изменилась, из старой удаляем, в новую заносим
-        if (!oldUser.getSchool().getSchoolName().equals(userDTO.getSchoolName())){
-            School oldSchool = oldUser.getSchool();
-            School newSchool = schoolRepository.getBySchoolName(userDTO.getSchoolName());
+        if (!oldUser.getSchool().getSchoolName().equals(userDTO.getSchoolName())) {
+            schoolRepository.deleteUserById(oldUser.getSchool().getId(), oldUser.getId());
 
+            School newSchool = schoolRepository.getBySchoolName(userDTO.getSchoolName());
             newSchool.getUsers().add(updateUser);
-            oldSchool.getUsers().remove(oldUser);
-            schoolRepository.saveAll(List.of(oldSchool,newSchool));
-        }
-        else userRepository.save(updateUser);
+            schoolRepository.save(newSchool);
+
+            // Удаляем всю историю взятия книг со старой школы
+            if (oldUser.getBookedBooks().size() > 0) {
+                for (BookedBook bookedBook : oldUser.getBookedBooks()) {
+                    bookedBookService.deleteById(bookedBook.getId());
+                }
+            }
+        } else userRepository.save(updateUser);
+    }
+
+    @Override
+    public List<String> getAllFullNameBySchoolId(Long id) {
+        return userRepository.getAllFullNameBySchoolId(id);
     }
 }

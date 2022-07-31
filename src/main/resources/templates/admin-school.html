@@ -8,8 +8,8 @@
 <body>
 <div>
     <div th:insert="fragments/nav :: nav"></div>
-    <div class="container" style="padding-top: 5vh; display: flex; flex-direction: column; align-items: center;">
-        <h3>Школы</span></h3>
+    <div class="container-fluid" style="padding-top: 5vh; display: flex; flex-direction: column; align-items: center;">
+        <h3>Школы</h3>
         <br>
         <form action="#" th:action="@{/admin/school/save}" th:object="${newSchool}" method="post">
             <input type="hidden" th:field="*{id}">
@@ -19,15 +19,15 @@
                 <th class="alert alert-danger" role="alert" th:text="${error}" colspan="3"></th>
             </tr>
             <tr>
-                <th scope="col">Название</th>
-                <th scope="col">Загрузить фото (на перспективу)</th>
+                <th scope="col"><label for="input_school_name">Название</label></th>
+                <th scope="col"><label for="input_school_img">Загрузить фото (на перспективу)</label></th>
                 <th></th>
             </tr>
             </thead>
             <tbody>
             <tr>
-                <td><input type="text" th:field="*{schoolName}"></td>
-                <td><input type="text" th:field="*{schoolImg}"></td>
+                <td><input id="input_school_name" type="text" th:field="*{schoolName}" required></td>
+                <td><input id="input_school_img" type="text" th:field="*{schoolImg}"></td>
                 <td>
                     <button class="btn btn-success" type="submit">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"

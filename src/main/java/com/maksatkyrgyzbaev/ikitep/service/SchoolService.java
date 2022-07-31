@@ -22,5 +22,9 @@ public interface SchoolService {
 
     SchoolDTO getById(Long id);
 
+    SchoolDTO findById(Long id);
+
     SchoolDTO getBySchoolName(String schoolName);
+
+    String  getSchoolNameById(Long schoolId);
 }

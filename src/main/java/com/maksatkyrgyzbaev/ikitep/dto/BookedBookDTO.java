@@ -12,12 +12,17 @@ import java.time.LocalDate;
 public class BookedBookDTO {
 
     private Long id;
-    private SchoolDTO school;
+    private Long schoolId;
+    private String schoolName;
     private BookDTO book;
-    private UserDTO user;
-    private BookedBookDTO bookedBook;
+    private String userFullName;
     private LocalDate dateOfCreation;
     private LocalDate returnDate;
+    private String returnDateString;
     private boolean bookingIsActive;
 
+    public BookedBookDTO(Long schoolId, BookDTO book ) {
+        this.schoolId = schoolId;
+        this.book = book;
+    }
 }

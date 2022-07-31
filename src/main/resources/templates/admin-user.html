@@ -8,7 +8,7 @@
 <body>
 <div>
     <div th:insert="fragments/nav :: nav"></div>
-    <div class="container" style="padding-top: 5vh; display: flex; flex-direction: column; align-items: center;">
+    <div class="container-fluid" style="padding-top: 5vh; display: flex; flex-direction: column; align-items: center;">
         <h3>Ученики и библиотекари</h3>
         <br>
         <form action="#" th:action="@{/admin/user/save}" th:object="${newUser}" method="post">
@@ -19,23 +19,23 @@
                     <th class="alert alert-danger" role="alert" th:text="${error}" colspan="7"></th>
                 </tr>
                 <tr>
-                    <th scope="col">Логин</th>
-                    <th scope="col">Пароль</th>
-                    <th scope="col">Подтвердите пароль</th>
-                    <th scope="col">Полное имя</th>
-                    <th scope="col">Выберите роль</th>
-                    <th scope="col">Выберите школу</th>
+                    <th scope="col"><label for="input_username">Логин</label></th>
+                    <th scope="col"><label for="input_password">Пароль</label></th>
+                    <th scope="col"><label for="input_matching_password">Подтвердите пароль</label></th>
+                    <th scope="col"><label for="input_full_name">Полное имя</label></th>
+                    <th scope="col"><label for="input_role">Выберите роль</label></th>
+                    <th scope="col"><label for="input_school">Выберите школу</label></th>
                     <th scope="col"></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
-                    <td><input type="text" th:field="*{username}"></td>
-                    <td><input type="text" th:field="*{password}"></td>
-                    <td><input type="text" th:field="*{matchingPassword}"></td>
-                    <td><input type="text" th:field="*{fullName}"></td>
+                    <td><input id="input_username" type="text" th:field="*{username}" required></td>
+                    <td><input id="input_password" type="text" th:field="*{password}" required></td>
+                    <td><input id="input_matching_password" type="text" th:field="*{matchingPassword}" required></td>
+                    <td><input id="input_full_name" type="text" th:field="*{fullName}"></td>
                     <td>
-                        <select th:field="*{role}">
+                        <select id="input_role" th:field="*{role}">
                             <option value="" th:text="${newUser.role}"></option>
                             <option th:each="role : ${allRole}"
                                     th:value="${role.name()}"
@@ -44,7 +44,7 @@
                         </select>
                     </td>
                     <td>
-                        <select th:field="*{schoolName}">
+                        <select id="input_school" th:field="*{schoolName}">
                             <option value="" th:text="${newUser.schoolName}"></option>
                             <option th:each="school : ${allSchoolName}"
                                     th:value="${school.schoolName}"
@@ -87,14 +87,14 @@
                 <td th:text="${user.schoolName}"></td>
                 <td th:text="${user.countBookedBooksId}"></td>
                 <td>
-                    <button class="btn btn-warning" type="button"
+                    <button th:if="${!user.role.name().equals('ADMIN')}" class="btn btn-warning" type="button"
                             th:onclick="|window.location.href='/admin/user/update-${user.getId}'|">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                              class="bi bi-pencil" viewBox="0 0 16 16">
                             <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
                         </svg>
                     </button>
-                    <button class="btn btn-danger" type="button"
+                    <button th:if="${!user.role.name().equals('ADMIN')}" class="btn btn-danger" type="button"
                             th:onclick="|window.location.href='/admin/user/delete-${user.getId}'|">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                              class="bi bi-eraser" viewBox="0 0 16 16">

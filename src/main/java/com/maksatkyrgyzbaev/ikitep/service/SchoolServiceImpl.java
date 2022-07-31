@@ -8,6 +8,7 @@ import com.maksatkyrgyzbaev.ikitep.repository.SchoolRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.DateFormatter;
 import javax.xml.bind.ValidationException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -101,8 +102,19 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
+    public SchoolDTO findById(Long id) {
+        return MAPPER.fromSchool(schoolRepository.findById(id).get());
+    }
+
+    @Override
     public SchoolDTO getBySchoolName(String schoolName) {
         return MAPPER.fromSchool(schoolRepository.getBySchoolName(schoolName));
+
+    }
+
+    @Override
+    public String getSchoolNameById(Long id) {
+        return schoolRepository.getSchoolNameById(id);
     }
 
 

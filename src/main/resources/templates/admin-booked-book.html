@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Main</title>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
+</head>
+<body>
+<div>
+    <div th:insert="fragments/nav :: nav"></div>
+    <div class="container-fluid" style="padding-top: 5vh; display: flex; flex-direction: column; align-items: center;">
+        <form>
+            <table class="table text-center">
+                <thead>
+                <tr>
+                    <th scope="col" colspan="2">Все книги</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td th:text="${'Всего книг на выдаче: ' + allBookedBooks.size()}" colspan="2"></td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
+        <br>
+        <table class="table text-center">
+            <thead>
+            <tr>
+                <th scope="col">№</th>
+                <th scope="col">Серийный номер</th>
+                <th scope="col">Автор</th>
+                <th scope="col">Название</th>
+                <th scope="col">Школа</th>
+                <th scope="col">У кого?</th>
+                <th scope="col">С какого числа</th>
+                <th scope="col"></th>
+                <th scope="col">По какое</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <th:block th:switch="${allBookedBooks.size()}">
+                <tbody th:case="0">
+                <tr>
+                    <td colspan="10">Пусто</td>
+                </tr>
+                </tbody>
+                <tbody th:case="*">
+                <tr th:each="booked,stat : ${allBookedBooks}">
+                    <td th:text="${stat.count}"></td>
+                    <td th:text="${booked.book.serialNumber}"></td>
+                    <td th:text="${booked.book.author}"></td>
+                    <td th:text="${booked.book.bookName}"></td>
+                    <td th:text="${booked.book.schoolName}"></td>
+                    <td th:text="${booked.userFullName}"></td>
+                    <td th:text="${booked.dateOfCreation}"></td>
+                    <td th:text="' - '"></td>
+                    <td th:text="${booked.returnDate}"></td>
+                    <td>
+                        <button class="btn btn-danger" type="button"
+                                th:onclick="|window.location.href='/admin/booked-book/delete-${booked.getId}'|">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-eraser" viewBox="0 0 16 16">
+                                <path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828l6.879-6.879zm2.121.707a1 1 0 0 0-1.414 0L4.16 7.547l5.293 5.293 4.633-4.633a1 1 0 0 0 0-1.414l-3.879-3.879zM8.746 13.547 3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293l.16-.16z"/>
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </th:block>
+        </table>
+    </div>
+</div>
+
+<script th:src="@{/webjars/jquery/3.0.0/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/1.12.9-1/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.0.0-2/js/bootstrap.min.js}"></script>
+
+</body>
+</html>

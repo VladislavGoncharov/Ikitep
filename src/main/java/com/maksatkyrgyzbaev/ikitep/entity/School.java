@@ -25,7 +25,7 @@ public class School {
     private String schoolName;
     @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<User> users;
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<Book> books;
     @OneToMany(fetch = FetchType.LAZY)
     private List<BookedBook> bookedBooks;
