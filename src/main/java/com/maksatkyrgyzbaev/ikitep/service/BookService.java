@@ -13,9 +13,17 @@ public interface BookService {
 
     List<BookDTO> findAllBySchool(Long id);
 
-    void save(BookDTO bookDTO);
+    void save(Long schoolId,BookDTO bookDTO );
+
+    void update(BookDTO bookDTO, Long schoolId);
 
     BookDTO getById(Long id);
 
+    BookDTO findById(Long id);
+
     void deleteById(Long id);
+
+    void deleteById(Long id, Long schoolId);
+
+    List<BookDTO> findAll();
 }

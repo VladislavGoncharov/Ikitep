@@ -8,30 +8,49 @@
 <body>
 <div>
     <div th:insert="fragments/nav :: nav"></div>
-    <div class="container" style="padding-top: 5vh; display: flex; flex-direction: column; align-items: center;">
-        <h3>Все книги <span th:text="${school.schoolName}"></span></h3>
-        <h3>Всего книг: <span th:text="${school.countBooks}"></span></h3>
-        <h3>В наличии: <span th:text="${school.countBooks - school.countBookedBooks}"></span></h3>
-        <h3>На выдаче: <span th:text="${school.countBookedBooks}"></span></h3>
-        <h3>Всего учеников: <span th:text="${school.countUsers}"></span></h3>
-        <br>
-        <form action="#" th:action="@{/save-book}" th:object="${newBooks}" method="post">
-            <input type="hidden" th:field="*{id}">
-            <input type="hidden" th:text="${school.schoolName}" th:field="*{schoolName}">
+    <div class="container-fluid" style="padding-top: 5vh; display: flex; flex-direction: column; align-items: center;">
+        <form>
             <table class="table text-center">
                 <thead>
                 <tr>
-                    <th scope="col">Серийный номер</th>
-                    <th scope="col">Автор</th>
-                    <th scope="col">Название</th>
+                    <th scope="col" th:text="${school.schoolName}" colspan="2"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td th:text="${'Всего книг: ' + school.countBooks}"></td>
+                    <td th:text="${'Всего учеников: ' + school.countUsers}"></td>
+                </tr>
+                <tr>
+                    <td th:text="${'В наличии: ' + (school.countBooks - school.countBookedBooks)}"></td>
+                    <td th:text="${'На выдаче: ' + school.countBookedBooks}"></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><a th:href="@{/booked-book}" class="btn btn-primary">Посмотреть выданные книги</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
+        <br>
+        <form action="#" th:action="@{/save-book}" th:object="${newBooks}" method="post">
+            <input type="hidden" th:field="*{id}">
+            <table class="table text-center">
+                <thead>
+                <tr>
+                    <th scope="col"><label for="input_serial_number">Серийный номер</label></th>
+                    <th scope="col"><label for="input_author">Автор</label></th>
+                    <th scope="col"><label for="input_book_name">Название</label></th>
+                    <th th:if="${newBooks.id==null}" scope="col"><label for="input_number_of_saves">Количество</label>
+                    </th>
                     <th scope="col"></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
-                    <td><input type="text" th:field="*{serialNumber}"></td>
+                    <td><input id="input_serial_number" type="text" th:field="*{serialNumber}"></td>
                     <td>
-                        <input type="text" list="authors" th:field="*{author}"/>
+                        <input id="input_author" type="text" list="authors" th:field="*{author}"/>
                         <datalist id="authors">
                             <option th:each="author : ${allAuthors}"
                                     th:value="${author}"
@@ -39,13 +58,16 @@
                             </option>
                         </datalist>
                     </td>
-                    <td><input type="text" list="bookNameList" th:field="*{bookName}">
+                    <td>
+                        <input id="input_book_name" type="text" list="bookNameList" th:field="*{bookName}">
                         <datalist id="bookNameList">
                             <option th:each="bookName : ${allBookName}"
                                     th:value="${bookName}"
                                     th:text="${bookName}">
                             </option>
                         </datalist>
+                    <td th:if="${newBooks.id==null}">
+                        <input id="input_number_of_saves" type="number" th:field="*{numberOfSaves}">
                     </td>
                     <td>
                         <button class="btn btn-success" type="submit">
@@ -66,33 +88,69 @@
                 <th scope="col">Серийный номер</th>
                 <th scope="col">Автор</th>
                 <th scope="col">Название</th>
+                <th scope="col">Как часто брали?</th>
+                <th scope="col">Где находится?</th>
                 <th scope="col"></th>
             </tr>
             </thead>
-            <tbody>
-            <tr th:each="book,stat : ${allBooks}">
-                <td th:text="${stat.count}"></td>
-                <td th:text="${book.serialNumber}"></td>
-                <td th:text="${book.author}"></td>
-                <td th:text="${book.bookName}"></td>
-                <td>
-                    <button class="btn btn-warning" type="button"
-                            th:onclick="|window.location.href='/update-book-${book.getId}'|">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                             class="bi bi-pencil" viewBox="0 0 16 16">
-                            <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
-                        </svg>
-                    </button>
-                    <button class="btn btn-danger" type="button"
-                            th:onclick="|window.location.href='/delete-book-${book.getId}'|">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                             class="bi bi-eraser" viewBox="0 0 16 16">
-                            <path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828l6.879-6.879zm2.121.707a1 1 0 0 0-1.414 0L4.16 7.547l5.293 5.293 4.633-4.633a1 1 0 0 0 0-1.414l-3.879-3.879zM8.746 13.547 3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293l.16-.16z"/>
-                        </svg>
-                    </button>
-                </td>
-            </tr>
-            </tbody>
+            <th:block th:switch="${allBooks.size()}">
+                <tbody th:case="0">
+                <tr>
+                    <td colspan="8">Пусто</td>
+                </tr>
+                </tbody>
+                <tbody th:case="*">
+                <tr th:each="book,stat : ${allBooks}">
+                    <td th:text="${stat.count}"></td>
+                    <td th:text="${book.serialNumber}"></td>
+                    <td th:text="${book.author}"></td>
+                    <td th:text="${book.bookName}"></td>
+                    <td th:text="${book.likes}"></td>
+                    <td th:switch="${book.isBookBooked()}">
+                        <div th:case="false">В библиотеке</div>
+                        <div th:case="true">
+                            У <span th:text="${book.lastBookedBook.user.fullName} "></span>
+                            до <span th:text="${
+                        book.lastBookedBook.returnDate.format(T(java.time.format.DateTimeFormatter).ofPattern('dd.MM'))
+                        }"></span>
+                        </div>
+                    </td>
+                    <td>
+                        <th:block th:switch="${book.isBookBooked()}">
+                            <button th:case="true" class="btn btn-secondary" type="button">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+                                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                                </svg>
+                            </button>
+                            <button th:case="false" class="btn btn-success" type="button"
+                                    th:onclick="|window.location.href='/booked-book-${book.getId}'|">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     class="bi bi-person-plus-fill" viewBox="0 0 16 16">
+                                    <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                                    <path fill-rule="evenodd"
+                                          d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/>
+                                </svg>
+                            </button>
+
+                        </th:block>
+                        <button class="btn btn-warning" type="button"
+                                th:onclick="|window.location.href='/update-book-${book.getId}'|">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-pencil" viewBox="0 0 16 16">
+                                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                            </svg>
+                        </button>
+                        <button class="btn btn-danger" type="button"
+                                th:onclick="|window.location.href='/delete-book-${book.getId}'|">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-eraser" viewBox="0 0 16 16">
+                                <path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828l6.879-6.879zm2.121.707a1 1 0 0 0-1.414 0L4.16 7.547l5.293 5.293 4.633-4.633a1 1 0 0 0 0-1.414l-3.879-3.879zM8.746 13.547 3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293l.16-.16z"/>
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </th:block>
         </table>
     </div>
 </div>

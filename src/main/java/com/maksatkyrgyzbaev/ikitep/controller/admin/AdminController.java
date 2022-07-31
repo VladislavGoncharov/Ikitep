@@ -31,6 +31,6 @@ public class AdminController {
         model.addAttribute("user",userService.getCountUsers());
         model.addAttribute("book",bookService.getCountBooks());
         model.addAttribute("bookedBook",bookedBookService.getCountBookedBook());
-        return "adminPage";
+        return "admin-page";
     }
 }

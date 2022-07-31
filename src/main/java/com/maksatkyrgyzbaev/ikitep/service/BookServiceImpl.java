@@ -3,6 +3,8 @@ package com.maksatkyrgyzbaev.ikitep.service;
 
 import com.maksatkyrgyzbaev.ikitep.dto.BookDTO;
 import com.maksatkyrgyzbaev.ikitep.entity.Book;
+import com.maksatkyrgyzbaev.ikitep.entity.BookedBook;
+import com.maksatkyrgyzbaev.ikitep.entity.School;
 import com.maksatkyrgyzbaev.ikitep.mapper.BookMapper;
 import com.maksatkyrgyzbaev.ikitep.repository.BookRepository;
 import com.maksatkyrgyzbaev.ikitep.repository.SchoolRepository;
@@ -19,10 +21,12 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final SchoolRepository schoolRepository;
+    private final BookedBookService bookedBookService;
 
-    public BookServiceImpl(BookRepository bookRepository, SchoolRepository schoolRepository) {
+    public BookServiceImpl(BookRepository bookRepository, SchoolRepository schoolRepository, BookedBookService bookedBookService) {
         this.bookRepository = bookRepository;
         this.schoolRepository = schoolRepository;
+        this.bookedBookService = bookedBookService;
     }
 
     @Override
@@ -46,13 +50,28 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void save(BookDTO bookDTO) {
+    public void save(Long schoolId, BookDTO bookDTO) {
+        for (int i = 0; i < bookDTO.getNumberOfSaves(); i++) {
+
+            Book book = bookRepository.save(Book.builder()
+                    .serialNumber(bookDTO.getSerialNumber())
+                    .author(bookDTO.getAuthor())
+                    .bookName(bookDTO.getBookName())
+                    .school(schoolRepository.getById(schoolId))
+                    .build());
+
+            schoolRepository.saveBookInSchool(schoolId, book.getId());
+        }
+    }
+
+    @Override
+    public void update(BookDTO bookDTO, Long schoolId) {
         bookRepository.save(Book.builder()
                 .id(bookDTO.getId())
                 .serialNumber(bookDTO.getSerialNumber())
                 .author(bookDTO.getAuthor())
                 .bookName(bookDTO.getBookName())
-                .school(schoolRepository.getBySchoolName(bookDTO.getSchoolName()))
+                .school(schoolRepository.getById(schoolId))
                 .build());
     }
 
@@ -62,7 +81,29 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public BookDTO findById(Long id) {
+        return MAPPER.fromBook(bookRepository.findById(id).get());
+    }
+
+    @Override
     public void deleteById(Long id) {
-        bookRepository.deleteById(id);
+        Long schoolId = bookRepository.getById(id).getSchool().getId();
+        deleteById(id, schoolId);
+    }
+
+    @Override
+    public void deleteById(Long bookId, Long schoolId) {
+        Book book = bookRepository.getById(bookId);
+        schoolRepository.deleteBookByIdFromSchool(schoolId, bookId);
+        if (book.getBookedBook().size() > 0) {
+            for (BookedBook bookedBook : book.getBookedBook())
+                bookedBookService.deleteById(bookedBook.getId());
+        }
+        bookRepository.delete(book);
+    }
+
+    @Override
+    public List<BookDTO> findAll() {
+        return MAPPER.fromBookList(bookRepository.findAll());
     }
 }

@@ -3,6 +3,7 @@ package com.maksatkyrgyzbaev.ikitep.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -30,4 +31,9 @@ public class User {
     private School school;
     @OneToMany
     private List<BookedBook> bookedBooks;
+
+    @PrePersist
+    public  void prePersist(){
+        bookedBooks = new ArrayList<>();
+    }
 }

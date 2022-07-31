@@ -30,7 +30,7 @@ public class Book {
     @ManyToOne
     @JoinColumn(name = "school_id")
     private School school;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<BookedBook> bookedBook;
 
     @PrePersist
@@ -38,9 +38,5 @@ public class Book {
         if (serialNumber==null)
             serialNumber = "";
         likes = 0;
-    }
-    @PreUpdate
-    public void preUpdate(){
-        likes++;
     }
 }

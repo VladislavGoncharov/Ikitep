@@ -20,4 +20,6 @@ public interface UserService extends UserDetailsService {
     void save(UserDTO userDTO) throws ValidationException;
 
     void update(UserDTO userDTO) throws ValidationException;
+
+    List<String> getAllFullNameBySchoolId(Long id);
 }
