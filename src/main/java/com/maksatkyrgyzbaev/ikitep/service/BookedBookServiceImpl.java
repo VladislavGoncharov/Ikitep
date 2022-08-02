@@ -1,19 +1,23 @@
 package com.maksatkyrgyzbaev.ikitep.service;
 
 import com.maksatkyrgyzbaev.ikitep.dto.BookedBookDTO;
+import com.maksatkyrgyzbaev.ikitep.dto.SchoolDTO;
 import com.maksatkyrgyzbaev.ikitep.entity.*;
 import com.maksatkyrgyzbaev.ikitep.mapper.BookedBookMapper;
 import com.maksatkyrgyzbaev.ikitep.repository.BookRepository;
 import com.maksatkyrgyzbaev.ikitep.repository.BookedBookRepository;
 import com.maksatkyrgyzbaev.ikitep.repository.SchoolRepository;
 import com.maksatkyrgyzbaev.ikitep.repository.UserRepository;
+import com.maksatkyrgyzbaev.ikitep.util.Search;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -41,7 +45,11 @@ public class BookedBookServiceImpl implements BookedBookService {
 
     @Override
     public List<BookedBookDTO> getAllBySchool(Long schoolId) {
-        return MAPPER.fromBookedBookList(bookedBookRepository.getAllBySchool(schoolRepository.getById(schoolId)));
+        return MAPPER.fromBookedBookList(bookedBookRepository.getAllBySchool(schoolRepository.getById(schoolId)))
+                .stream()
+                .sorted(BookedBookDTO::compareTo)
+                .sorted(BookedBookDTO::compareByIsBookedBook)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -102,6 +110,30 @@ public class BookedBookServiceImpl implements BookedBookService {
 
     @Override
     public List<BookedBookDTO> findAll() {
-        return MAPPER.fromBookedBookList(bookedBookRepository.findAll());
+        return MAPPER.fromBookedBookList(bookedBookRepository.findAll())
+                .stream()
+                .sorted(BookedBookDTO::compareTo)
+                .sorted(BookedBookDTO::compareByIsBookedBook)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BookedBookDTO> getAllBySearchingInSchoolById(Long schoolId, String fieldSearch) {
+        String fieldSearchToLC = fieldSearch.toLowerCase();
+
+        return MAPPER.fromBookedBookList(bookedBookRepository.getAllBySchool(schoolRepository.getById(schoolId)))
+                .stream()
+                .filter(bookedBookDTO -> Search.containsBookedBookFieldsWithFieldSearch(bookedBookDTO,fieldSearchToLC))
+                .sorted(BookedBookDTO::compareTo)
+                .sorted(BookedBookDTO::compareByIsBookedBook)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void returnBookById(Long bookedId) {
+        BookedBook bookedBook = bookedBookRepository.getById(bookedId);
+        bookedBook.setBookingIsActive(false);
+        bookedBook.setReturnDate(LocalDate.now());
+        bookedBookRepository.save(bookedBook);
     }
 }

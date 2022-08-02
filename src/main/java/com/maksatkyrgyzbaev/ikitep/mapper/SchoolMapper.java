@@ -5,6 +5,7 @@ import com.maksatkyrgyzbaev.ikitep.entity.School;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +29,7 @@ public interface SchoolMapper {
                 .bookedBooks(school.getBookedBooks())
                 .countUsers((long) school.getUsers().size())
                 .countBooks((long) school.getBooks().size())
-                .countBookedBooks((long) school.getBookedBooks().size())
+                .countBookedBooks(SchoolDTO.getCountBookedBooksIsActive(school.getBookedBooks()))
                 .build();
     }
 

@@ -1,5 +1,6 @@
 package com.maksatkyrgyzbaev.ikitep.service;
 
+import com.maksatkyrgyzbaev.ikitep.dto.BookDTO;
 import com.maksatkyrgyzbaev.ikitep.dto.UserDTO;
 import com.maksatkyrgyzbaev.ikitep.entity.BookedBook;
 import com.maksatkyrgyzbaev.ikitep.entity.Role;
@@ -75,6 +76,7 @@ public class UserServiceImpl implements UserService {
                         .schoolName(user.getSchool().getSchoolName())
                         .countBookedBooksId(user.getBookedBooks().size())
                         .build())
+                .sorted(UserDTO::compareTo)
                 .collect(Collectors.toList());
     }
 
@@ -151,6 +153,7 @@ public class UserServiceImpl implements UserService {
 
         if (!Role.isRole(userDTO.getRole()))
             throw new ValidationException("Роль не выбрана");
+
         if (!schoolRepository.existsBySchoolName(userDTO.getSchoolName()))
             throw new ValidationException("Школа не выбрана");
 

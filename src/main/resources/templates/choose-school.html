@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Выберите школу</title>
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
     <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
 </head>
 <body>
@@ -11,19 +12,29 @@
     <div class="container-fluid" style="padding-top: 5vh; display: flex; flex-direction: column; align-items: center;">
         <h3><span th:text=" ${user.fullName}"></span>, добро пожаловать в электронную библиотеку</h3>
         <br>
-        <div class="card-deck">
-            <div class="card" style="width: 20rem;" th:each="school : ${schools}">
-                <!--/*@thymesVar id="school" type="com.maksatkyrgyzbaev.ikitep.dto.SchoolDTO"*/-->
-                <img class="card-img-top" th:src="@{/images/{img} (img=${school.schoolImg})}"
-                     th:alt="${school.schoolName}">
-                <div class="card-body text-center">
-                    <h5 class="card-title" th:text="${school.schoolName}"></h5>
-                    <p class="card-text" th:text="${'Всего учеников: ' + school.countUsers}"></p>
-                    <p class="card-text" th:text="${'Всего книг: ' + school.countBooks}"></p>
-                    <p class="card-text" th:text="${'Книг на выдаче: ' + school.countBookedBooks}"></p>
-                    <a th:href="@{/school-{schoolId} (schoolId=${school.id})}" class="btn btn-primary">Перейти</a>
+        <div th:switch="${schools}" class="card-deck">
+            <th:block th:case="null">
+                <div class="card" style="width: 20rem;">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Сайт рассчитан только на библиотекарей, извините</h5>
+                    </div>
                 </div>
-            </div>
+            </th:block>
+            <th:block th:case="*">
+                <div class="card" style="width: 20rem;" th:each="school : ${schools}">
+                    <!--/*@thymesVar id="school" type="com.maksatkyrgyzbaev.ikitep.dto.SchoolDTO"*/-->
+                    <img class="card-img-top" th:src="@{/images/{img} (img=${school.schoolImg})}"
+                         th:alt="${school.schoolName}">
+                    <div class="card-body text-center">
+                        <h5 class="card-title" th:text="${school.schoolName}"></h5>
+                        <p class="card-text" th:text="${'Всего учеников: ' + school.countUsers}"></p>
+                        <p class="card-text" th:text="${'Всего книг: ' + school.countBooks}"></p>
+                        <p class="card-text" th:text="${'Книг на выдаче: ' + school.countBookedBooks}"></p>
+                        <a th:href="@{/school-{schoolId} (schoolId=${school.id})}"
+                           class="btn btn-primary">Перейти</a>
+                    </div>
+                </div>
+            </th:block>
         </div>
     </div>
 </div>

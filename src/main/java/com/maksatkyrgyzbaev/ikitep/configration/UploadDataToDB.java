@@ -55,17 +55,17 @@ public class UploadDataToDB {
                     .build();
 
             School school1 = School.builder()
-                    .schoolName("школа№1")
+                    .schoolName("Школа № 1")
                     .schoolImg("school_1.png")
                     .users(List.of(user1,user2))
                     .build();
             School school2 = School.builder()
-                    .schoolName("школа№2")
+                    .schoolName("Школа № 2")
                     .schoolImg("school_1.png")
                     .users(List.of(user3))
                     .build();
             School school3 = School.builder()
-                    .schoolName("школа№3")
+                    .schoolName("Школа № 3")
                     .schoolImg("school_1.png")
                     .users(Collections.singletonList(user4))
                     .build();
@@ -78,40 +78,56 @@ public class UploadDataToDB {
             Book book1 = Book.builder()
                     .id(1L)
                     .bookName("Война и мир")
-                    .author("Лев Толстой")
-                    .serialNumber("956324892")
+                    .author("Толстой Л.Н.")
+                    .serialNumber("563424892")
                     .school(school1)
                     .build();
             Book book2 = Book.builder()
                     .id(2L)
+                    .bookName("Учебник по физике 8 класс")
+                    .author("Пёрышкин А.В.")
+                    .serialNumber("324331343")
+                    .school(school1)
+                    .build();
+            Book book3 = Book.builder()
+                    .id(3L)
                     .bookName("Сказка о царе Салтане")
-                    .author("Александр Пушкин")
-                    .serialNumber("956323423")
+                    .author("Пушкин А.С.")
+                    .serialNumber("995223423")
                     .school(school1)
                     .build();
 
-            BookedBook bookedBook = BookedBook.builder()
+            BookedBook bookedBook1 = BookedBook.builder()
                     .id(1L)
                     .book(book1)
                     .user(user1)
                     .returnDate(LocalDate.now().plusWeeks(2))
                     .school(book1.getSchool())
                     .build();
+            BookedBook bookedBook2 = BookedBook.builder()
+                    .id(2L)
+                    .book(book2)
+                    .user(user2)
+                    .returnDate(LocalDate.now().minusDays(1))
+                    .school(book2.getSchool())
+                    .build();
 
             schoolRepository.save(school1);
             schoolRepository.save(school2);
             schoolRepository.save(school3);
 
-            bookRepository.save(book1);
-            bookRepository.save(book2);
+            bookRepository.saveAll(List.of(book1,book2,book3));
 
-            book1.setBookedBook(Collections.singletonList(bookedBook));
-            user1.setBookedBooks(Collections.singletonList(bookedBook));
+            book1.setBookedBook(Collections.singletonList(bookedBook1));
+            book2.setBookedBook(Collections.singletonList(bookedBook2));
+            user1.setBookedBooks(Collections.singletonList(bookedBook1));
+            user2.setBookedBooks(Collections.singletonList(bookedBook2));
 
-            school1.setBooks(List.of(book1,book2));
-            school1.setBookedBooks(Collections.singletonList(bookedBook));
+            school1.setBooks(List.of(book1,book2,book3));
+            school1.setBookedBooks(List.of(bookedBook1,bookedBook2));
 
-            bookedBookRepository.save(bookedBook);
+            bookedBookRepository.save(bookedBook1);
+            bookedBookRepository.save(bookedBook2);
             schoolRepository.save(school1);
 
         };

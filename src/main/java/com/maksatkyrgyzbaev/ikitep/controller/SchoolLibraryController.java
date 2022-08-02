@@ -5,7 +5,6 @@ import com.maksatkyrgyzbaev.ikitep.dto.SchoolDTO;
 import com.maksatkyrgyzbaev.ikitep.mapper.BookMapper;
 import com.maksatkyrgyzbaev.ikitep.service.BookService;
 import com.maksatkyrgyzbaev.ikitep.service.SchoolService;
-import com.maksatkyrgyzbaev.ikitep.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -29,8 +28,8 @@ public class SchoolLibraryController {
     }
 
     @RequestMapping("school-{id}")
-    public String schoolLibrary(@PathVariable Long id, Model model, HttpServletRequest request, Boolean switchModel) {
-        if (switchModel==null) addModel(model, schoolService.getById(id), new BookDTO());
+    public String schoolLibrary(@PathVariable Long id, Model model, HttpServletRequest request) {
+        addModel(model, schoolService.getById(id), new BookDTO());
         request.getSession().setAttribute("schoolId", id);
         return "school-library";
     }
@@ -38,7 +37,6 @@ public class SchoolLibraryController {
     @PostMapping("save-book")
     public String schoolLibrarySaveBook(@ModelAttribute BookDTO bookDTO, HttpServletRequest request) {
         Long schoolId = (Long) request.getSession().getAttribute("schoolId");
-
 
         if (bookDTO.getId() != null) bookService.update(bookDTO, schoolId);
         else bookService.save(schoolId, bookDTO);
@@ -51,8 +49,7 @@ public class SchoolLibraryController {
         Long schoolId = (Long) request.getSession().getAttribute("schoolId");
 
         addModel(model, schoolService.getById(schoolId), bookService.getById(id));
-        return schoolLibrary(schoolId,model,request,true);
-    }
+        return "school-library";    }
 
     @RequestMapping("delete-book-{id}")
     public String schoolLibraryDeleteBook(@PathVariable Long id, HttpServletRequest request) {
@@ -62,6 +59,15 @@ public class SchoolLibraryController {
         return "redirect:/school-" + schoolId;
     }
 
+    @RequestMapping("search-book")
+    public String searchBookInSchoolLibrary(@ModelAttribute BookDTO bookDTO, Model model, HttpServletRequest request) {
+        Long schoolId = (Long) request.getSession().getAttribute("schoolId");
+        addModel(model,
+                schoolService.getSchoolBooksBySearchingInSchoolById(schoolId,bookDTO.getFieldSearch())
+                ,new BookDTO());
+        return "school-library";
+    }
+
     private void addModel(Model model, SchoolDTO schoolDTO, BookDTO bookDTO) {
         model.addAttribute("school", schoolDTO);
         model.addAttribute("allBooks", MAPPER.fromBookList(schoolDTO.getBooks()));
@@ -69,6 +75,8 @@ public class SchoolLibraryController {
         model.addAttribute("allBookName", bookService.getAllBookName());
         model.addAttribute("newBooks", bookDTO);
     }
+
+
 
 
 }

@@ -16,7 +16,8 @@ public interface BookedBookMapper {
 
     default List<BookedBookDTO> fromBookedBookList(List<BookedBook> bookedBooks) {
         return bookedBooks.stream()
-                .map(this::fromBookedBook).collect(Collectors.toList());
+                .map(this::fromBookedBook)
+                .collect(Collectors.toList());
     }
 
     default BookedBookDTO fromBookedBook(BookedBook bookedBook) {

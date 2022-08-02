@@ -5,10 +5,10 @@ import com.maksatkyrgyzbaev.ikitep.dto.SchoolDTO;
 import com.maksatkyrgyzbaev.ikitep.entity.School;
 import com.maksatkyrgyzbaev.ikitep.mapper.SchoolMapper;
 import com.maksatkyrgyzbaev.ikitep.repository.SchoolRepository;
+import com.maksatkyrgyzbaev.ikitep.util.Search;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.DateFormatter;
 import javax.xml.bind.ValidationException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,9 +35,22 @@ public class SchoolServiceImpl implements SchoolService {
                         .schoolImg(school.getSchoolImg())
                         .countUsers((long) school.getUsers().size())
                         .countBooks((long) school.getBooks().size())
-                        .countBookedBooks((long) school.getBookedBooks().size())
+                        .countBookedBooks(SchoolDTO.getCountBookedBooksIsActive(school.getBookedBooks()))
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public SchoolDTO findIdSchoolNameImgAndAllCountBySchoolName(String schoolName) {
+        School school = schoolRepository.getBySchoolName(schoolName);
+        return SchoolDTO.builder()
+                .id(school.getId())
+                .schoolName(school.getSchoolName())
+                .schoolImg(school.getSchoolImg())
+                .countUsers((long) school.getUsers().size())
+                .countBooks((long) school.getBooks().size())
+                .countBookedBooks(SchoolDTO.getCountBookedBooksIsActive(school.getBookedBooks()))
+                .build();
     }
 
     @Override
@@ -98,7 +111,9 @@ public class SchoolServiceImpl implements SchoolService {
 
     @Override
     public SchoolDTO getById(Long id) {
-        return MAPPER.fromSchool(schoolRepository.getById(id));
+        SchoolDTO schoolDTO = MAPPER.fromSchool(schoolRepository.getById(id));
+        schoolDTO.sortBooks();
+        return schoolDTO;
     }
 
     @Override
@@ -115,6 +130,18 @@ public class SchoolServiceImpl implements SchoolService {
     @Override
     public String getSchoolNameById(Long id) {
         return schoolRepository.getSchoolNameById(id);
+    }
+
+    @Override
+    public SchoolDTO getSchoolBooksBySearchingInSchoolById(Long schoolId, String fieldSearch) {
+        String fieldSearchToLC = fieldSearch.toLowerCase();
+        SchoolDTO schoolDTO = getById(schoolId);
+
+        schoolDTO.setBooks(schoolDTO.getBooks().stream()
+                .filter(book -> Search.containsBookFieldsWithFieldSearch(book,fieldSearchToLC))
+                .collect(Collectors.toList()));
+
+        return schoolDTO;
     }
 
 

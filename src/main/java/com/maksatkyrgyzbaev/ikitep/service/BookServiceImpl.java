@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -66,13 +67,20 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void update(BookDTO bookDTO, Long schoolId) {
-        bookRepository.save(Book.builder()
+        Book oldBook = bookRepository.getById(bookDTO.getId());
+        Book updateBook = Book.builder()
                 .id(bookDTO.getId())
                 .serialNumber(bookDTO.getSerialNumber())
                 .author(bookDTO.getAuthor())
                 .bookName(bookDTO.getBookName())
                 .school(schoolRepository.getById(schoolId))
-                .build());
+                .build();
+
+        if (oldBook.getBookedBook()!=null)
+            updateBook.setBookedBook(oldBook.getBookedBook());
+
+        updateBook.setLikes(oldBook.getLikes());
+        bookRepository.save(updateBook);
     }
 
     @Override
@@ -104,6 +112,10 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookDTO> findAll() {
-        return MAPPER.fromBookList(bookRepository.findAll());
+       return MAPPER.fromBookList(bookRepository.findAll())
+               .stream()
+               .sorted(BookDTO::compareTo)
+               .sorted(BookDTO::compareByIsBookedBook)
+               .collect(Collectors.toList());
     }
 }
