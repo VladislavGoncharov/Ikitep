@@ -9,9 +9,11 @@ public interface SchoolService {
 
     List<SchoolDTO> findAllIdSchoolNameImgAndAllCount();
 
-    Long getCountSchools();
+    SchoolDTO findIdSchoolNameImgAndAllCountBySchoolName(String schoolName);
 
+    Long getCountSchools();
     void save(SchoolDTO schoolDTO) throws ValidationException;
+
     void update(SchoolDTO schoolDTO) throws ValidationException;
 
     void deleteById(Long id);
@@ -27,4 +29,6 @@ public interface SchoolService {
     SchoolDTO getBySchoolName(String schoolName);
 
     String  getSchoolNameById(Long schoolId);
+
+    SchoolDTO getSchoolBooksBySearchingInSchoolById(Long schoolId, String fieldSearch);
 }

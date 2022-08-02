@@ -6,7 +6,6 @@
     <div class="navbar-nav w-100">
         <a class="navbar-brand text-color" href="/">Учет школьных книг</a>
     </div>
-    <a class="navbar-brand text-color" th:href="@{/}">Выбор школы</a>
     <a sec:authorize="hasAuthority('ADMIN')"
        class="navbar-brand text-color" th:href="@{/admin}">Админ</a>
     <a sec:authorize="isAnonymous()"

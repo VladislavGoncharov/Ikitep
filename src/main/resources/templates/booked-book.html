@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Main</title>
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
     <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
 </head>
 <body>
@@ -10,9 +11,12 @@
     <div th:insert="fragments/nav :: nav"></div>
     <div class="container-fluid" style="padding-top: 5vh; display: flex; flex-direction: column; align-items: center;">
         <br>
-        <h3 th:text="${'Все книги выданные в ' + schoolName}"></h3>
+        <h3>Все книги выданные в
+            <a th:text="${schoolName}" th:href="@{/school-{id} (id=${schoolId})}"></a>
+        </h3>
         <br>
-        <form th:if="${newBookedBook!=null}" action="#" th:action="@{/save-booked}" th:object="${newBookedBook}"
+        <form th:if="${newBookedBook.getBook()!=null}" action="#" th:action="@{/save-booked}"
+              th:object="${newBookedBook}"
               method="post">
             <input type="hidden" th:field="*{id}">
             <input type="hidden" th:field="*{book.id}">
@@ -37,7 +41,7 @@
                         <td th:case="true" th:text="${newBookedBook.userFullName}"></td>
                         <td th:case="*">
                             <input id="input_user" type="text" list="userFullNameList" th:field="*{userFullName}"
-                                   required>
+                                   placeholder="Полное имя" required>
                             <datalist id="userFullNameList">
                                 <option th:each="fullName : ${allUserBySchool}"
                                         th:value="${fullName}"
@@ -61,56 +65,80 @@
                 </tbody>
             </table>
         </form>
-        <table class="table text-center">
-            <thead>
-            <tr>
-                <th scope="col">№</th>
-                <th scope="col">Серийный номер</th>
-                <th scope="col">Автор</th>
-                <th scope="col">Название</th>
-                <th scope="col">У кого?</th>
-                <th scope="col">С какого числа</th>
-                <th scope="col"></th>
-                <th scope="col">По какое</th>
-                <th scope="col"></th>
-            </tr>
-            </thead>
-            <th:block th:switch="${allBookedBooks.size()}">
-                <tbody th:case="0">
+        <form class="container-fluid" th:action="@{/search-booked-book}" th:object="${newBookedBook}" method="post">
+            <table class="table text-center">
+                <thead>
                 <tr>
-                    <td colspan="10">Пусто</td>
-                </tr>
-                </tbody>
-                <tbody th:case="*">
-                <tr th:each="booked,stat : ${allBookedBooks}">
-                    <td th:text="${stat.count}"></td>
-                    <td th:text="${booked.book.serialNumber}"></td>
-                    <td th:text="${booked.book.author}"></td>
-                    <td th:text="${booked.book.bookName}"></td>
-                    <td th:text="${booked.userFullName}"></td>
-                    <td th:text="${booked.dateOfCreation}"></td>
-                    <td th:text="' - '"></td>
-                    <td th:text="${booked.returnDate}"></td>
-                    <td>
-                        <button class="btn btn-warning" type="button"
-                                th:onclick="|window.location.href='/update-booked-${booked.getId}'|">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                 class="bi bi-pencil" viewBox="0 0 16 16">
-                                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
-                            </svg>
+                    <th>
+                        <button class="btn btn-primary" type="button"
+                                th:onclick="|window.location.href='/booked-book'|">
+                            Обновить
                         </button>
-                        <button class="btn btn-danger" type="button"
-                                th:onclick="|window.location.href='/delete-booked-${booked.getId}'|">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                 class="bi bi-eraser" viewBox="0 0 16 16">
-                                <path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828l6.879-6.879zm2.121.707a1 1 0 0 0-1.414 0L4.16 7.547l5.293 5.293 4.633-4.633a1 1 0 0 0 0-1.414l-3.879-3.879zM8.746 13.547 3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293l.16-.16z"/>
-                            </svg>
+                    </th>
+                    <th scope="col" colspan="7">
+                        <input class="container-fluid" type="text" th:field="*{fieldSearch}"
+                               placeholder="Введите серийный номер, название книги, автора или имя ученика"></th>
+                    <th scope="col">
+                        <button class="btn btn-primary" type="submit">
+                            Поиск
                         </button>
-                    </td>
+                    </th>
                 </tr>
-                </tbody>
-            </th:block>
-        </table>
+                <tr>
+                    <th scope="col">№</th>
+                    <th scope="col">Серийный номер</th>
+                    <th scope="col">Автор</th>
+                    <th scope="col">Название</th>
+                    <th scope="col">У кого?</th>
+                    <th scope="col">С какого числа</th>
+                    <th scope="col"></th>
+                    <th scope="col">По какое</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <th:block th:switch="${allBookedBooks.size()}">
+                    <tbody th:case="0">
+                    <tr>
+                        <td colspan="10">Пусто</td>
+                    </tr>
+                    </tbody>
+                    <tbody th:case="*">
+                    <tr th:each="booked,stat : ${allBookedBooks}" th:class="${booked.isBookingOldOrOverdueBooking()}">
+                        <td th:text="${stat.count}"></td>
+                        <td th:text="${booked.book.serialNumber}"></td>
+                        <td th:text="${booked.book.author}"></td>
+                        <td th:text="${booked.book.bookName}"></td>
+                        <td th:text="${booked.userFullName}"></td>
+                        <td th:text="${booked.dateOfCreation}"></td>
+                        <td th:text="' - '"></td>
+                        <td th:text="${booked.returnDate}"></td>
+                        <td>
+                            <th:block th:if="${booked.bookingIsActive}">
+                                <button class="btn btn-success" type="button"
+                                        th:onclick="|window.location.href='/return-book-${booked.getId}'|">
+                                    Сдать книгу
+                                </button>
+                                <button class="btn btn-warning" type="button"
+                                        th:onclick="|window.location.href='/update-booked-${booked.getId}'|">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                         class="bi bi-pencil" viewBox="0 0 16 16">
+                                        <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                                    </svg>
+                                </button>
+                                <button class="btn btn-danger" type="button"
+                                        th:onclick="|window.location.href='/delete-booked-${booked.getId}'|">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                         class="bi bi-eraser" viewBox="0 0 16 16">
+                                        <path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828l6.879-6.879zm2.121.707a1 1 0 0 0-1.414 0L4.16 7.547l5.293 5.293 4.633-4.633a1 1 0 0 0 0-1.414l-3.879-3.879zM8.746 13.547 3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293l.16-.16z"/>
+                                    </svg>
+                                </button>
+                            </th:block>
+                        </td>
+                    </tr>
+                    </tbody>
+                </th:block>
+            </table>
+        </form>
     </div>
 </div>
 

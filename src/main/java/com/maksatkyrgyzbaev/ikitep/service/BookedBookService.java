@@ -18,4 +18,8 @@ public interface BookedBookService {
     void deleteById(Long id);
 
     List<BookedBookDTO> findAll();
+
+    List<BookedBookDTO> getAllBySearchingInSchoolById(Long schoolId, String fieldSearch);
+
+    void returnBookById(Long bookedId);
 }

@@ -1,6 +1,7 @@
 package com.maksatkyrgyzbaev.ikitep.dto;
 
 import com.maksatkyrgyzbaev.ikitep.entity.Role;
+import com.maksatkyrgyzbaev.ikitep.entity.User;
 import lombok.*;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDTO {
+public class UserDTO implements Comparable<UserDTO> {
 
     private Long id;
     private String username;
@@ -21,4 +22,10 @@ public class UserDTO {
     private String schoolName;
     private List<Long> bookedBooksId;
     private int countBookedBooksId;
+
+    @Override
+    public int compareTo(UserDTO o) {
+        if (this.getId() > o.getId()) return -1;
+        return 1;
+    }
 }

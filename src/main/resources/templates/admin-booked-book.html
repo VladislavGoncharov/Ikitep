@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Main</title>
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
     <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
 </head>
 <body>
@@ -46,12 +47,12 @@
                 </tr>
                 </tbody>
                 <tbody th:case="*">
-                <tr th:each="booked,stat : ${allBookedBooks}">
+                <tr th:each="booked,stat : ${allBookedBooks}" th:class="${booked.isBookingOldOrOverdueBooking()}">
                     <td th:text="${stat.count}"></td>
                     <td th:text="${booked.book.serialNumber}"></td>
                     <td th:text="${booked.book.author}"></td>
                     <td th:text="${booked.book.bookName}"></td>
-                    <td th:text="${booked.book.schoolName}"></td>
+                    <td th:text="${booked.schoolName}"></td>
                     <td th:text="${booked.userFullName}"></td>
                     <td th:text="${booked.dateOfCreation}"></td>
                     <td th:text="' - '"></td>

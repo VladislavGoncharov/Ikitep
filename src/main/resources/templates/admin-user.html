@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Main</title>
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
     <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
 </head>
 <body>
@@ -13,6 +14,7 @@
         <br>
         <form action="#" th:action="@{/admin/user/save}" th:object="${newUser}" method="post">
             <input type="hidden" th:field="*{id}">
+            <input th:if="${newUser.getId()!=null}" type="hidden" th:field="*{schoolName}">
             <table class="table text-center">
                 <thead>
                 <tr th:if="${error!=null}">
@@ -30,10 +32,12 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td><input id="input_username" type="text" th:field="*{username}" required></td>
-                    <td><input id="input_password" type="text" th:field="*{password}" required></td>
-                    <td><input id="input_matching_password" type="text" th:field="*{matchingPassword}" required></td>
-                    <td><input id="input_full_name" type="text" th:field="*{fullName}"></td>
+                    <td><input id="input_username" type="text" th:field="*{username}" placeholder="Логин" required></td>
+                    <td><input id="input_password" type="text" th:field="*{password}" placeholder="Пароль" required>
+                    </td>
+                    <td><input id="input_matching_password" type="text" th:field="*{matchingPassword}"
+                               placeholder="Подтвердите пароль" required></td>
+                    <td><input id="input_full_name" type="text" th:field="*{fullName}" placeholder="Полное имя"></td>
                     <td>
                         <select id="input_role" th:field="*{role}">
                             <option value="" th:text="${newUser.role}"></option>
@@ -43,15 +47,19 @@
                             </option>
                         </select>
                     </td>
-                    <td>
-                        <select id="input_school" th:field="*{schoolName}">
-                            <option value="" th:text="${newUser.schoolName}"></option>
-                            <option th:each="school : ${allSchoolName}"
-                                    th:value="${school.schoolName}"
-                                    th:text="${school.schoolName}">
-                            </option>
-                        </select>
-                    </td>
+                    <th:block th:switch="${newUser.getId()}">
+                        <td th:case="null">
+                            <select id="input_school" th:field="*{schoolName}">
+                                <option value="" th:text="${newUser.schoolName}"></option>
+                                <option th:each="school : ${allSchoolName}"
+                                        th:value="${school.schoolName}"
+                                        th:text="${school.schoolName}">
+                                </option>
+                            </select>
+                        </td>
+                        <td th:case="*" th:text="${newUser.schoolName}">
+                        </td>
+                    </th:block>
                     <td>
                         <button class="btn btn-success" type="submit">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"

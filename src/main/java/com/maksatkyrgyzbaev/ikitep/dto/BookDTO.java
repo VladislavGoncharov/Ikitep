@@ -1,10 +1,9 @@
 package com.maksatkyrgyzbaev.ikitep.dto;
 
 import com.maksatkyrgyzbaev.ikitep.entity.BookedBook;
+import com.maksatkyrgyzbaev.ikitep.util.Search;
 import lombok.*;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Getter
@@ -12,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BookDTO {
+public class BookDTO extends Search implements Comparable<BookDTO> {
     private Long id;
     private String serialNumber;
     private String author;
@@ -32,4 +31,20 @@ public class BookDTO {
         return this.bookedBook.get(this.bookedBook.size() - 1);
     }
 
+    // Стиль строчек с бронированием
+    public String isBooking() {
+        if (isBookBooked()) return "table-light text-secondary";
+        return "";
+    }
+
+    @Override
+    public int compareTo(BookDTO o) {
+        if (this.getId() > o.getId()) return 1;
+        return -1;
+    }
+
+    public int compareByIsBookedBook(BookDTO o) {
+        if (this.isBookBooked()) return -1;
+        return 1;
+    }
 }
