@@ -5,7 +5,6 @@ import com.maksatkyrgyzbaev.ikitep.entity.School;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,7 +32,7 @@ public interface SchoolMapper {
                 .build();
     }
 
-    default School toSchool(SchoolDTO schoolDTO,School school) {
+    default School toSchool(SchoolDTO schoolDTO, School school) {
         return School.builder()
                 .id(schoolDTO.getId())
                 .schoolName(schoolDTO.getSchoolName())

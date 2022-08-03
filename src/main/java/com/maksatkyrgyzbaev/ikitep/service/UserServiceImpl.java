@@ -61,11 +61,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Long getCountUsers() {
-        return userRepository.count();
-    }
-
-    @Override
     public List<UserDTO> findAll() {
         return userRepository.findAll().stream()
                 .map(user -> UserDTO.builder()
@@ -81,16 +76,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteById(Long id) {
-        User user = userRepository.getById(id);
-
-        if (user.getBookedBooks().size() > 0) {
-            for (BookedBook bookedBook : user.getBookedBooks()) {
-                bookedBookService.deleteById(bookedBook.getId());
-            }
-        }
-        schoolRepository.deleteUserById(user.getSchool().getId(), id);
-        userRepository.deleteById(id);
+    public Long getCountUsers() {
+        return userRepository.count();
     }
 
     @Override
@@ -107,6 +94,10 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    @Override
+    public List<String> getAllFullNameBySchoolId(Long id) {
+        return userRepository.getAllFullNameBySchoolId(id);
+    }
 
     @Override
     public void save(UserDTO userDTO) throws ValidationException {
@@ -185,7 +176,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<String> getAllFullNameBySchoolId(Long id) {
-        return userRepository.getAllFullNameBySchoolId(id);
+    public void deleteById(Long id) {
+        User user = userRepository.getById(id);
+
+        if (user.getBookedBooks().size() > 0) {
+            for (BookedBook bookedBook : user.getBookedBooks()) {
+                bookedBookService.deleteById(bookedBook.getId());
+            }
+        }
+        schoolRepository.deleteUserById(user.getSchool().getId(), id);
+        userRepository.deleteById(id);
     }
 }

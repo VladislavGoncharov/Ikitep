@@ -1,7 +1,6 @@
 package com.maksatkyrgyzbaev.ikitep.dto;
 
 import com.maksatkyrgyzbaev.ikitep.entity.Role;
-import com.maksatkyrgyzbaev.ikitep.entity.User;
 import lombok.*;
 
 import java.util.List;

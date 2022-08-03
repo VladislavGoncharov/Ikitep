@@ -2,7 +2,6 @@ package com.maksatkyrgyzbaev.ikitep.controller;
 
 import com.maksatkyrgyzbaev.ikitep.dto.UserDTO;
 import com.maksatkyrgyzbaev.ikitep.entity.Role;
-import com.maksatkyrgyzbaev.ikitep.entity.User;
 import com.maksatkyrgyzbaev.ikitep.service.SchoolService;
 import com.maksatkyrgyzbaev.ikitep.service.UserService;
 import org.springframework.stereotype.Controller;

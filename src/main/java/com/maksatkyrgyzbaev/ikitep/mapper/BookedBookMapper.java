@@ -37,15 +37,4 @@ public interface BookedBookMapper {
                 .bookingIsActive(bookedBook.isBookingIsActive())
                 .build();
     }
-
-//    default Book toBook(BookDTO BookDTO) {
-//        return Book.builder()
-//                .id(schoolDTO.getId())
-//                .schoolName(schoolDTO.getSchoolName())
-//                .schoolImg(schoolDTO.getSchoolImg())
-//                .books(school.getBooks())
-//                .users(school.getUsers())
-//                .bookedBooks(school.getBookedBooks())
-//                .build();
-//    }
 }

@@ -4,7 +4,6 @@ package com.maksatkyrgyzbaev.ikitep.service;
 import com.maksatkyrgyzbaev.ikitep.dto.BookDTO;
 import com.maksatkyrgyzbaev.ikitep.entity.Book;
 import com.maksatkyrgyzbaev.ikitep.entity.BookedBook;
-import com.maksatkyrgyzbaev.ikitep.entity.School;
 import com.maksatkyrgyzbaev.ikitep.mapper.BookMapper;
 import com.maksatkyrgyzbaev.ikitep.repository.BookRepository;
 import com.maksatkyrgyzbaev.ikitep.repository.SchoolRepository;
@@ -31,6 +30,20 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public List<BookDTO> findAll() {
+        return MAPPER.fromBookList(bookRepository.findAll())
+                .stream()
+                .sorted(BookDTO::compareTo)
+                .sorted(BookDTO::compareByIsBookedBook)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public BookDTO getById(Long id) {
+        return MAPPER.fromBook(bookRepository.getById(id));
+    }
+
+    @Override
     public Long getCountBooks() {
         return bookRepository.count();
     }
@@ -43,11 +56,6 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<String> getAllBookName() {
         return bookRepository.getAllBookName();
-    }
-
-    @Override
-    public List<BookDTO> findAllBySchool(Long id) {
-        return MAPPER.fromBookList(bookRepository.findAll());
     }
 
     @Override
@@ -76,21 +84,11 @@ public class BookServiceImpl implements BookService {
                 .school(schoolRepository.getById(schoolId))
                 .build();
 
-        if (oldBook.getBookedBook()!=null)
+        if (oldBook.getBookedBook() != null)
             updateBook.setBookedBook(oldBook.getBookedBook());
 
         updateBook.setLikes(oldBook.getLikes());
         bookRepository.save(updateBook);
-    }
-
-    @Override
-    public BookDTO getById(Long id) {
-        return MAPPER.fromBook(bookRepository.getById(id));
-    }
-
-    @Override
-    public BookDTO findById(Long id) {
-        return MAPPER.fromBook(bookRepository.findById(id).get());
     }
 
     @Override
@@ -108,14 +106,5 @@ public class BookServiceImpl implements BookService {
                 bookedBookService.deleteById(bookedBook.getId());
         }
         bookRepository.delete(book);
-    }
-
-    @Override
-    public List<BookDTO> findAll() {
-       return MAPPER.fromBookList(bookRepository.findAll())
-               .stream()
-               .sorted(BookDTO::compareTo)
-               .sorted(BookDTO::compareByIsBookedBook)
-               .collect(Collectors.toList());
     }
 }

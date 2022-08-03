@@ -1,15 +1,11 @@
 package com.maksatkyrgyzbaev.ikitep.util;
 
 
-import com.maksatkyrgyzbaev.ikitep.dto.BookDTO;
 import com.maksatkyrgyzbaev.ikitep.dto.BookedBookDTO;
 import com.maksatkyrgyzbaev.ikitep.entity.Book;
-import lombok.*;
-
-
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter

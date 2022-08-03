@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class SchoolLibraryController {
 
-    private  final BookMapper MAPPER = BookMapper.MAPPER;
+    private final BookMapper MAPPER = BookMapper.MAPPER;
 
     private final SchoolService schoolService;
     private final BookService bookService;
@@ -47,24 +47,21 @@ public class SchoolLibraryController {
     @RequestMapping("update-book-{id}")
     public String schoolLibraryUpdateBook(@PathVariable Long id, Model model, HttpServletRequest request) {
         Long schoolId = (Long) request.getSession().getAttribute("schoolId");
-
         addModel(model, schoolService.getById(schoolId), bookService.getById(id));
-        return "school-library";    }
+        return "school-library";
+    }
 
     @RequestMapping("delete-book-{id}")
     public String schoolLibraryDeleteBook(@PathVariable Long id, HttpServletRequest request) {
         Long schoolId = (Long) request.getSession().getAttribute("schoolId");
-
-        bookService.deleteById(id,schoolId);
+        bookService.deleteById(id, schoolId);
         return "redirect:/school-" + schoolId;
     }
 
     @RequestMapping("search-book")
     public String searchBookInSchoolLibrary(@ModelAttribute BookDTO bookDTO, Model model, HttpServletRequest request) {
         Long schoolId = (Long) request.getSession().getAttribute("schoolId");
-        addModel(model,
-                schoolService.getSchoolBooksBySearchingInSchoolById(schoolId,bookDTO.getFieldSearch())
-                ,new BookDTO());
+        addModel(model, schoolService.getSchoolBooksBySearchingInSchoolById(schoolId, bookDTO.getFieldSearch()), new BookDTO());
         return "school-library";
     }
 
@@ -75,8 +72,6 @@ public class SchoolLibraryController {
         model.addAttribute("allBookName", bookService.getAllBookName());
         model.addAttribute("newBooks", bookDTO);
     }
-
-
 
 
 }

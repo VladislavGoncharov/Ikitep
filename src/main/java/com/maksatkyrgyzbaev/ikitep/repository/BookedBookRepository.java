@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface BookedBookRepository extends JpaRepository<BookedBook,Long> {
+public interface BookedBookRepository extends JpaRepository<BookedBook, Long> {
 
     List<BookedBook> getAllBySchool(School school);
 }

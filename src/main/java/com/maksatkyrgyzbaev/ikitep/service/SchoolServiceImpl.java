@@ -54,6 +54,52 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
+    public List<SchoolDTO> findAllIdAndSchoolName() {
+        List<Object[]> objects = schoolRepository.findAllIdAndSchoolName();
+        return objects.stream().map(object -> SchoolDTO.builder()
+                        .id(Long.parseLong(String.valueOf(object[0])))
+                        .schoolName(String.valueOf(object[1]))
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public SchoolDTO getById(Long id) {
+        SchoolDTO schoolDTO = MAPPER.fromSchool(schoolRepository.getById(id));
+        schoolDTO.sortBooks();
+        return schoolDTO;
+    }
+
+    @Override
+    public String getSchoolNameById(Long id) {
+        return schoolRepository.getSchoolNameById(id);
+    }
+
+    @Override
+    public SchoolDTO getSchoolWithNameAndImgById(Long id) {
+        String school = schoolRepository.getSchoolWithNameAndImgById(id);
+        String[] strings = school.split(",");
+
+        return SchoolDTO.builder()
+                .id(id)
+                .schoolName(String.valueOf(strings[0]))
+                .schoolImg(String.valueOf(strings[1]))
+                .build();
+    }
+
+    @Override
+    public SchoolDTO getSchoolBooksBySearchingInSchoolById(Long schoolId, String fieldSearch) {
+        String fieldSearchToLC = fieldSearch.toLowerCase();
+        SchoolDTO schoolDTO = getById(schoolId);
+
+        schoolDTO.setBooks(schoolDTO.getBooks().stream()
+                .filter(book -> Search.containsBookFieldsWithFieldSearch(book, fieldSearchToLC))
+                .collect(Collectors.toList()));
+
+        return schoolDTO;
+    }
+
+    @Override
     public Long getCountSchools() {
         return schoolRepository.count();
     }
@@ -85,63 +131,6 @@ public class SchoolServiceImpl implements SchoolService {
     @Override
     public void deleteById(Long id) {
         schoolRepository.deleteById(id);
-    }
-
-    @Override
-    public SchoolDTO getSchoolWithNameAndImgById(Long id) {
-        String school = schoolRepository.getSchoolWithNameAndImgById(id);
-        String[] strings = school.split(",");
-
-        return SchoolDTO.builder()
-                .id(id)
-                .schoolName(String.valueOf(strings[0]))
-                .schoolImg(String.valueOf(strings[1]))
-                .build();
-    }
-
-    @Override
-    public List<SchoolDTO> findAllIdAndSchoolName() {
-        List<Object[]> objects = schoolRepository.findAllIdAndSchoolName();
-        return objects.stream().map(object -> SchoolDTO.builder()
-                .id(Long.parseLong(String.valueOf(object[0])))
-                .schoolName(String.valueOf(object[1]))
-                .build())
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public SchoolDTO getById(Long id) {
-        SchoolDTO schoolDTO = MAPPER.fromSchool(schoolRepository.getById(id));
-        schoolDTO.sortBooks();
-        return schoolDTO;
-    }
-
-    @Override
-    public SchoolDTO findById(Long id) {
-        return MAPPER.fromSchool(schoolRepository.findById(id).get());
-    }
-
-    @Override
-    public SchoolDTO getBySchoolName(String schoolName) {
-        return MAPPER.fromSchool(schoolRepository.getBySchoolName(schoolName));
-
-    }
-
-    @Override
-    public String getSchoolNameById(Long id) {
-        return schoolRepository.getSchoolNameById(id);
-    }
-
-    @Override
-    public SchoolDTO getSchoolBooksBySearchingInSchoolById(Long schoolId, String fieldSearch) {
-        String fieldSearchToLC = fieldSearch.toLowerCase();
-        SchoolDTO schoolDTO = getById(schoolId);
-
-        schoolDTO.setBooks(schoolDTO.getBooks().stream()
-                .filter(book -> Search.containsBookFieldsWithFieldSearch(book,fieldSearchToLC))
-                .collect(Collectors.toList()));
-
-        return schoolDTO;
     }
 
 

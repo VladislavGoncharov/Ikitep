@@ -9,17 +9,17 @@ import java.util.List;
 public interface UserService extends UserDetailsService {
     UserDTO findUserByUsername(String username);
 
-    Long getCountUsers();
-
     List<UserDTO> findAll();
 
-    void deleteById(Long id);
+    Long getCountUsers();
 
     UserDTO getById(Long id);
+
+    List<String> getAllFullNameBySchoolId(Long id);
 
     void save(UserDTO userDTO) throws ValidationException;
 
     void update(UserDTO userDTO) throws ValidationException;
 
-    List<String> getAllFullNameBySchoolId(Long id);
+    void deleteById(Long id);
 }
