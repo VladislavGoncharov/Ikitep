@@ -1,6 +1,7 @@
 package com.maksatkyrgyzbaev.ikitep.service;
 
 import com.maksatkyrgyzbaev.ikitep.dto.SchoolDTO;
+import com.maksatkyrgyzbaev.ikitep.entity.School;
 
 import javax.xml.bind.ValidationException;
 import java.util.List;
@@ -28,4 +29,8 @@ public interface SchoolService {
     void update(SchoolDTO schoolDTO) throws ValidationException;
 
     void deleteById(Long id);
+
+    School getSchoolById(Long schoolId);
+
+    void updateSchool(Long schoolId, String entityName, List<?> entities);
 }

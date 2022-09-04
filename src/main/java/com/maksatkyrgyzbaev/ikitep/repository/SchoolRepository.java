@@ -32,6 +32,10 @@ public interface SchoolRepository extends JpaRepository<School, Long> {
     void saveBookInSchool(Long schoolId, Long bookId);
 
     @Modifying
+    @Query(nativeQuery = true,value = "insert into SCHOOLS_USERS values(?1,?2)")
+    void saveUserInSchool(Long schoolId, Long id);
+
+    @Modifying
     @Query(nativeQuery = true,value = "delete FROM SCHOOLS_BOOKS where school_id=?1 and books_id=?2")
     void deleteBookByIdFromSchool(Long schoolId, Long bookId);
 

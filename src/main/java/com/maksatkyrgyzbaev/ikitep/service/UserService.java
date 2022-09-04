@@ -1,6 +1,7 @@
 package com.maksatkyrgyzbaev.ikitep.service;
 
 import com.maksatkyrgyzbaev.ikitep.dto.UserDTO;
+import com.maksatkyrgyzbaev.ikitep.entity.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import javax.xml.bind.ValidationException;
@@ -22,4 +23,7 @@ public interface UserService extends UserDetailsService {
     void update(UserDTO userDTO) throws ValidationException;
 
     void deleteById(Long id);
+
+    List<User> findAllUsers();
+
 }

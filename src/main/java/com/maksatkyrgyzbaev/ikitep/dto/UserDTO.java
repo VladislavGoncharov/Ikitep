@@ -3,6 +3,8 @@ package com.maksatkyrgyzbaev.ikitep.dto;
 import com.maksatkyrgyzbaev.ikitep.entity.Role;
 import lombok.*;
 
+import javax.servlet.ServletOutputStream;
+import java.io.*;
 import java.util.List;
 
 @Getter
@@ -27,4 +29,5 @@ public class UserDTO implements Comparable<UserDTO> {
         if (this.getId() > o.getId()) return -1;
         return 1;
     }
+
 }

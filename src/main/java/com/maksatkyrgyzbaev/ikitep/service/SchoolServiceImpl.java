@@ -2,9 +2,13 @@ package com.maksatkyrgyzbaev.ikitep.service;
 
 
 import com.maksatkyrgyzbaev.ikitep.dto.SchoolDTO;
+import com.maksatkyrgyzbaev.ikitep.entity.Book;
 import com.maksatkyrgyzbaev.ikitep.entity.School;
+import com.maksatkyrgyzbaev.ikitep.entity.User;
 import com.maksatkyrgyzbaev.ikitep.mapper.SchoolMapper;
+import com.maksatkyrgyzbaev.ikitep.repository.BookRepository;
 import com.maksatkyrgyzbaev.ikitep.repository.SchoolRepository;
+import com.maksatkyrgyzbaev.ikitep.repository.UserRepository;
 import com.maksatkyrgyzbaev.ikitep.util.Search;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,9 +24,13 @@ public class SchoolServiceImpl implements SchoolService {
     private final SchoolMapper MAPPER = SchoolMapper.MAPPER;
 
     private final SchoolRepository schoolRepository;
+    private final BookRepository bookRepository;
+    private final UserRepository userRepository;
 
-    public SchoolServiceImpl(SchoolRepository schoolRepository) {
+    public SchoolServiceImpl(SchoolRepository schoolRepository, BookRepository bookRepository, UserRepository userRepository) {
         this.schoolRepository = schoolRepository;
+        this.bookRepository = bookRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -131,6 +139,32 @@ public class SchoolServiceImpl implements SchoolService {
     @Override
     public void deleteById(Long id) {
         schoolRepository.deleteById(id);
+    }
+
+    @Override
+    public School getSchoolById(Long schoolId) {
+        return schoolRepository.findById(schoolId).get();
+    }
+
+    @Override
+    public void updateSchool(Long schoolId, String entityName, List<?> entities) {
+
+        if (entityName.equals("book")){
+            for (Object book:entities){
+                Book idBook = bookRepository.save((Book) book);
+                schoolRepository.saveBookInSchool(schoolId,idBook.getId());
+            }
+        }
+        else {
+            for (Object user:entities){
+                User newUser = (User) user;
+                if (userRepository.findUserByUsername(newUser.getUsername())==null){
+                    User idUser = userRepository.save(newUser);
+                    schoolRepository.saveUserInSchool(schoolId,idUser.getId());
+                }
+
+            }
+        }
     }
 
 

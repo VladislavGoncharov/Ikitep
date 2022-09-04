@@ -115,14 +115,15 @@ public class UserServiceImpl implements UserService {
         if (!schoolRepository.existsBySchoolName(userDTO.getSchoolName()))
             throw new ValidationException("Школа не выбрана");
 
+        School school = schoolRepository.getBySchoolName(userDTO.getSchoolName());
+
         User user = User.builder()
                 .username(userDTO.getUsername())
                 .password(new BCryptPasswordEncoder().encode(userDTO.getPassword()))
                 .fullName(userDTO.getFullName())
                 .role(userDTO.getRole())
-                .school(schoolRepository.getBySchoolName(userDTO.getSchoolName()))
+                .school(school)
                 .build();
-        School school = schoolRepository.getBySchoolName(userDTO.getSchoolName());
         school.getUsers().add(user);
         schoolRepository.save(school);
     }
@@ -186,5 +187,10 @@ public class UserServiceImpl implements UserService {
         }
         schoolRepository.deleteUserById(user.getSchool().getId(), id);
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public List<User> findAllUsers() {
+        return userRepository.findAll();
     }
 }
