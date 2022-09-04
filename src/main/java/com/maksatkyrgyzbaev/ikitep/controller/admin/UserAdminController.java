@@ -25,7 +25,7 @@ public class UserAdminController {
 
     @GetMapping
     public String userMain(Model model) {
-        addModel(model,new UserDTO(),null);
+        addModel(model, new UserDTO(), null);
         return "admin-user";
     }
 
@@ -35,16 +35,15 @@ public class UserAdminController {
             if (userDTO.getId() != null) userService.update(userDTO);
             else userService.save(userDTO);
         } catch (ValidationException e) {
-            addModel(model,userDTO,e.getMessage());
+            addModel(model, userDTO, e.getMessage());
             return "admin-user";
         }
-
         return "redirect:/admin/user";
     }
 
     @RequestMapping("/update-{id}")
     public String updateUser(@PathVariable("id") Long id, Model model) {
-        addModel(model,userService.getById(id),null);
+        addModel(model, userService.getById(id), null);
         return "admin-user";
 
     }
@@ -55,7 +54,7 @@ public class UserAdminController {
         return "redirect:/admin/user";
     }
 
-    private void addModel(Model model,UserDTO userDTO,String error){
+    private void addModel(Model model, UserDTO userDTO, String error) {
         model.addAttribute("allUsers", userService.findAll());
         model.addAttribute("allSchoolName", schoolService.findAllIdAndSchoolName());
         model.addAttribute("allRole", Role.getAllRoleWithoutAdmin());

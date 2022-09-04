@@ -35,7 +35,8 @@ public class SchoolDTO {
                 .sorted((o1, o2) -> { // Далее сортировка по бронированию (Все бронированные книги вниз)
                     if (o1.getBookedBook().size() == 0) return -1; // если ни разу не бронировали вверх
                     BookedBook bookedBook = o1.getBookedBook().get(o1.getBookedBook().size() - 1);
-                    if (bookedBook.isBookingIsActive()) return 1; // если бронирования были, проверяем последнюю бронь и ее активность
+                    if (bookedBook.isBookingIsActive()) return 1; // если бронирования были,
+                        // проверяем последнюю бронь и ее активность
                     else return -1;
                 })
                 .collect(Collectors.toList()));

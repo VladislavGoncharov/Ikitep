@@ -13,14 +13,14 @@
         <h3>Админ панель</h3>
         <br>
         <div class="card-deck">
-            <div class="card" style="width: 20rem;" >
+            <div class="card" style="width: 20rem;">
                 <div class="card-body text-center">
                     <h5 class="card-title">Школы</h5>
                     <p class="card-text" th:text="${'Общее количество: ' + school}"></p>
                     <a th:href="@{admin/school}" class="btn btn-primary">Смотреть</a>
                 </div>
             </div>
-            <div class="card" style="width: 20rem;" >
+            <div class="card" style="width: 20rem;">
                 <div class="card-body text-center">
                     <h5 class="card-title">Ученики и</h5>
                     <h5 class="card-title">Библиотекари</h5>
@@ -28,14 +28,14 @@
                     <a th:href="@{admin/user}" class="btn btn-primary">Смотреть</a>
                 </div>
             </div>
-            <div class="card" style="width: 20rem;" >
+            <div class="card" style="width: 20rem;">
                 <div class="card-body text-center">
                     <h5 class="card-title">Книги</h5>
                     <p class="card-text" th:text="${'Общее количество: ' + book}"></p>
                     <a th:href="@{admin/book}" class="btn btn-primary">Смотреть</a>
                 </div>
             </div>
-            <div class="card" style="width: 20rem;" >
+            <div class="card" style="width: 20rem;">
                 <div class="card-body text-center">
                     <h5 class="card-title">Книги на выдаче</h5>
                     <p class="card-text" th:text="${'Общее количество: ' + bookedBook}"></p>

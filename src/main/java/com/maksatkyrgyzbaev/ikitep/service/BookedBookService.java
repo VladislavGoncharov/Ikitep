@@ -5,7 +5,13 @@ import com.maksatkyrgyzbaev.ikitep.dto.BookedBookDTO;
 import java.util.List;
 
 public interface BookedBookService {
+    List<BookedBookDTO> findAll();
+
+    BookedBookDTO getById(Long id);
+
     Long getCountBookedBook();
+
+    List<BookedBookDTO> getAllBySearchingInSchoolById(Long schoolId, String fieldSearch);
 
     List<BookedBookDTO> getAllBySchool(Long schoolId);
 
@@ -13,13 +19,7 @@ public interface BookedBookService {
 
     void update(BookedBookDTO bookedBookDTO);
 
-    BookedBookDTO getById(Long id);
-
     void deleteById(Long id);
-
-    List<BookedBookDTO> findAll();
-
-    List<BookedBookDTO> getAllBySearchingInSchoolById(Long schoolId, String fieldSearch);
 
     void returnBookById(Long bookedId);
 }

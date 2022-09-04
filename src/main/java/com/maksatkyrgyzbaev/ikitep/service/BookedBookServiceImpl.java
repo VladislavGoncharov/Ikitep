@@ -1,7 +1,6 @@
 package com.maksatkyrgyzbaev.ikitep.service;
 
 import com.maksatkyrgyzbaev.ikitep.dto.BookedBookDTO;
-import com.maksatkyrgyzbaev.ikitep.dto.SchoolDTO;
 import com.maksatkyrgyzbaev.ikitep.entity.*;
 import com.maksatkyrgyzbaev.ikitep.mapper.BookedBookMapper;
 import com.maksatkyrgyzbaev.ikitep.repository.BookRepository;
@@ -14,8 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,8 +36,34 @@ public class BookedBookServiceImpl implements BookedBookService {
     }
 
     @Override
+    public List<BookedBookDTO> findAll() {
+        return MAPPER.fromBookedBookList(bookedBookRepository.findAll())
+                .stream()
+                .sorted(BookedBookDTO::compareTo)
+                .sorted(BookedBookDTO::compareByIsBookedBook)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public BookedBookDTO getById(Long id) {
+        return MAPPER.fromBookedBook(bookedBookRepository.getById(id));
+    }
+
+    @Override
     public Long getCountBookedBook() {
         return bookedBookRepository.count();
+    }
+
+    @Override
+    public List<BookedBookDTO> getAllBySearchingInSchoolById(Long schoolId, String fieldSearch) {
+        String fieldSearchToLC = fieldSearch.toLowerCase();
+
+        return MAPPER.fromBookedBookList(bookedBookRepository.getAllBySchool(schoolRepository.getById(schoolId)))
+                .stream()
+                .filter(bookedBookDTO -> Search.containsBookedBookFieldsWithFieldSearch(bookedBookDTO, fieldSearchToLC))
+                .sorted(BookedBookDTO::compareTo)
+                .sorted(BookedBookDTO::compareByIsBookedBook)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -55,7 +78,7 @@ public class BookedBookServiceImpl implements BookedBookService {
     @Override
     public void save(BookedBookDTO bookedBookDTO) {
         School school = schoolRepository.getById(bookedBookDTO.getSchoolId());
-        User user = userRepository.getByFullName(bookedBookDTO.getUserFullName());
+        User user = userRepository.findByFullName(bookedBookDTO.getUserFullName());
         Book book = bookRepository.getById(bookedBookDTO.getBook().getId());
 
         // Если ученик не добавлен в систему, мы его создаем
@@ -95,38 +118,12 @@ public class BookedBookServiceImpl implements BookedBookService {
     }
 
     @Override
-    public BookedBookDTO getById(Long id) {
-        return MAPPER.fromBookedBook(bookedBookRepository.getById(id));
-    }
-
-    @Override
     public void deleteById(Long id) {
         BookedBook bookedBook = bookedBookRepository.getById(id);
         userRepository.deleteBookedBookById(bookedBook.getUser().getId(), bookedBook.getId());
         bookRepository.deleteBookedBookById(bookedBook.getBook().getId(), bookedBook.getId());
         schoolRepository.deleteBookedBookById(bookedBook.getSchool().getId(), bookedBook.getId());
         bookedBookRepository.deleteById(id);
-    }
-
-    @Override
-    public List<BookedBookDTO> findAll() {
-        return MAPPER.fromBookedBookList(bookedBookRepository.findAll())
-                .stream()
-                .sorted(BookedBookDTO::compareTo)
-                .sorted(BookedBookDTO::compareByIsBookedBook)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<BookedBookDTO> getAllBySearchingInSchoolById(Long schoolId, String fieldSearch) {
-        String fieldSearchToLC = fieldSearch.toLowerCase();
-
-        return MAPPER.fromBookedBookList(bookedBookRepository.getAllBySchool(schoolRepository.getById(schoolId)))
-                .stream()
-                .filter(bookedBookDTO -> Search.containsBookedBookFieldsWithFieldSearch(bookedBookDTO,fieldSearchToLC))
-                .sorted(BookedBookDTO::compareTo)
-                .sorted(BookedBookDTO::compareByIsBookedBook)
-                .collect(Collectors.toList());
     }
 
     @Override

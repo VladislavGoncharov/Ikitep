@@ -1,9 +1,7 @@
 package com.maksatkyrgyzbaev.ikitep.mapper;
 
 import com.maksatkyrgyzbaev.ikitep.dto.BookDTO;
-import com.maksatkyrgyzbaev.ikitep.dto.SchoolDTO;
 import com.maksatkyrgyzbaev.ikitep.entity.Book;
-import com.maksatkyrgyzbaev.ikitep.entity.School;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -31,15 +29,4 @@ public interface BookMapper {
                 .likes(book.getLikes())
                 .build();
     }
-
-//    default Book toBook(BookDTO BookDTO) {
-//        return Book.builder()
-//                .id(schoolDTO.getId())
-//                .schoolName(schoolDTO.getSchoolName())
-//                .schoolImg(schoolDTO.getSchoolImg())
-//                .books(school.getBooks())
-//                .users(school.getUsers())
-//                .bookedBooks(school.getBookedBooks())
-//                .build();
-//    }
 }

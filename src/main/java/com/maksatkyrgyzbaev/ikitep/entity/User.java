@@ -33,7 +33,7 @@ public class User {
     private List<BookedBook> bookedBooks;
 
     @PrePersist
-    public  void prePersist(){
+    public void prePersist() {
         bookedBooks = new ArrayList<>();
     }
 }

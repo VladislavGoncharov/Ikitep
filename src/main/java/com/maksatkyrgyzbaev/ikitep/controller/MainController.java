@@ -2,13 +2,14 @@ package com.maksatkyrgyzbaev.ikitep.controller;
 
 import com.maksatkyrgyzbaev.ikitep.dto.UserDTO;
 import com.maksatkyrgyzbaev.ikitep.entity.Role;
-import com.maksatkyrgyzbaev.ikitep.entity.User;
 import com.maksatkyrgyzbaev.ikitep.service.SchoolService;
 import com.maksatkyrgyzbaev.ikitep.service.UserService;
+import com.maksatkyrgyzbaev.ikitep.util.WriteExcel;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.Collections;
 
@@ -24,7 +25,7 @@ public class MainController {
     }
 
     @RequestMapping("/")
-    public String chooseSchool(Model model, Principal principal) {
+    public String chooseSchool(Model model, Principal principal) throws IOException {
         UserDTO user = userService.findUserByUsername(principal.getName());
         model.addAttribute("user", user);
 
@@ -33,6 +34,11 @@ public class MainController {
         else if (user.getRole().equals(Role.LIBRARIAN)) // Для библиотекаря видна только ее школа, чтобы случайно не перепутала ))
             model.addAttribute("schools",
                     Collections.singletonList(schoolService.findIdSchoolNameImgAndAllCountBySchoolName(user.getSchoolName())));
+
+
+//        WriteExcel readWriteExcel = new WriteExcel(userService.findAllUsers());
+//        readWriteExcel.writeBooks("users.XLSX");
+
         return "choose-school";
     }
 }

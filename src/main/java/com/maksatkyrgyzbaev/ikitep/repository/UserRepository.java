@@ -11,18 +11,16 @@ import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<User,Long> {
-    User findUserByUsername(String username);
 
     boolean existsByUsername(String username);
     boolean existsByUsernameAndIdNot(String username,Long id);
 
-    @Query(value = "select password from users where id = :id ",nativeQuery = true)
-    String getPasswordById(@Param("id") Long id);
+    User findUserByUsername(String username);
+
+    User findByFullName(String fullName);
 
     @Query(nativeQuery = true,value = "SELECT full_name FROM USERS where school_id = :id")
     List<String> getAllFullNameBySchoolId(@Param("id") Long id);
-
-    User getByFullName(String fullName);
 
     @Modifying
     @Query(nativeQuery = true,value = "delete FROM USERS_BOOKED_BOOKS  where user_id=?1 and BOOKED_BOOKS_id=?2")

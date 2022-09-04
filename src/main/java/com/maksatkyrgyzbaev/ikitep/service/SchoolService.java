@@ -1,6 +1,7 @@
 package com.maksatkyrgyzbaev.ikitep.service;
 
 import com.maksatkyrgyzbaev.ikitep.dto.SchoolDTO;
+import com.maksatkyrgyzbaev.ikitep.entity.School;
 
 import javax.xml.bind.ValidationException;
 import java.util.List;
@@ -11,24 +12,25 @@ public interface SchoolService {
 
     SchoolDTO findIdSchoolNameImgAndAllCountBySchoolName(String schoolName);
 
+    List<SchoolDTO> findAllIdAndSchoolName();
+
+    SchoolDTO getById(Long id);
+
+    String  getSchoolNameById(Long schoolId);
+
+    SchoolDTO getSchoolBooksBySearchingInSchoolById(Long schoolId, String fieldSearch);
+
+    SchoolDTO getSchoolWithNameAndImgById(Long id);
+
     Long getCountSchools();
+
     void save(SchoolDTO schoolDTO) throws ValidationException;
 
     void update(SchoolDTO schoolDTO) throws ValidationException;
 
     void deleteById(Long id);
 
-    SchoolDTO getSchoolWithNameAndImgById(Long id);
+    School getSchoolById(Long schoolId);
 
-    List<SchoolDTO> findAllIdAndSchoolName();
-
-    SchoolDTO getById(Long id);
-
-    SchoolDTO findById(Long id);
-
-    SchoolDTO getBySchoolName(String schoolName);
-
-    String  getSchoolNameById(Long schoolId);
-
-    SchoolDTO getSchoolBooksBySearchingInSchoolById(Long schoolId, String fieldSearch);
+    void updateSchool(Long schoolId, String entityName, List<?> entities);
 }

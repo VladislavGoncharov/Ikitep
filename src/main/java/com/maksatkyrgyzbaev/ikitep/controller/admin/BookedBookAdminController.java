@@ -12,11 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/admin/booked-book")
 public class BookedBookAdminController {
 
-    private final BookService bookService;
     private final BookedBookService bookedBookService;
 
-    public BookedBookAdminController(BookService bookService, BookedBookService bookedBookService) {
-        this.bookService = bookService;
+    public BookedBookAdminController(BookedBookService bookedBookService) {
         this.bookedBookService = bookedBookService;
     }
 
